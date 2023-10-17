@@ -1,0 +1,255 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class Board {
+  - board: Position[][]
+  + getPiece(int, int): Piece
+  - getRowLength(): int
+  + copyBoard(): Position[][]
+  + isPieceUnderAttack(Map<PieceType, BasicMovementValidator[]>, Position, Colour): boolean
+  + searchPiecePosition(PieceType, Colour): Position
+  + getPosition(int, int): Position
+  + searchPiecePosition(Piece): Position
+}
+class CastlingValidator {
+  - getRook(Board, int): Piece?
+  + move(Board, Position, Position): Board
+  - rookNotMoved(Piece): boolean
+  - kingNotMoved(Piece): boolean
+  + validateMove(Board, Position, Position): SpecialMovementType
+  - isCastling(Piece, int, int): boolean
+  + areObstacles(Board, Position, Position): boolean
+}
+class CheckMate {
+  - isBeingChecked(Map<PieceType, BasicMovementValidator[]>, Position, Board, Colour): boolean
+  - getAdjacentPositions(Board, Position): Position[]
+  + validateRule(Map<PieceType, BasicMovementValidator[]>, Board, Colour): boolean
+  - canMove(Map<PieceType, BasicMovementValidator[]>, Position, Board, Colour): boolean
+  - canCover(Map<PieceType, BasicMovementValidator[]>, Position, Board, Colour): boolean
+}
+class CheckMateValidator {
+  + validateWinningCondition(Map<PieceType, BasicMovementValidator[]>, Board, Colour): boolean
+  - getAdjacentPositions(Board, Position): Position[]
+  - isBeingChecked(Map<PieceType, BasicMovementValidator[]>, Position, Board, Colour): boolean
+  - canMove(Map<PieceType, BasicMovementValidator[]>, Position, Board, Colour): boolean
+}
+enum Colour << enumeration >> {
+  + WHITE: 
+  + BLACK: 
+  + valueOf(String): Colour
+  + values(): Colour[]
+}
+class ConstructorHelper {
+  + printBoard(Board): void
+  - initializeChessPieces(Position[][], Map<PieceType, BasicMovementValidator[]>): void
+  + initializeBoard(GameVersion): Position[][]
+}
+class CreateGame {
+  + createClassicGame(Player, Player): Game
+}
+class DiagonalValidator {
+  ~ canJump: boolean
+  ~ maxSteps: int
+  + areObstacles(Board, Position, Position): boolean
+  + validateMove(Board, Position, Position): boolean
+}
+enum Direction << enumeration >> {
+  + DOWN: 
+  + UP: 
+  + HORIZONTAL: 
+  + DIAGONAL: 
+  + HORSE: 
+  + values(): Direction[]
+  + valueOf(String): Direction
+}
+class Game {
+  - version: GameVersion
+  - moveHistory: Stack<Board>
+  - startingBoard: Board
+  - players: Player[]
+  - returnBoard(Piece, Board): Board
+  - validateRule(Colour, Board): boolean
+  - getPieceIn(Position, Board): Piece
+  + getVersion(): GameVersion
+  + move(Position, Position): Board
+  - addBoardToHistory(Board): void
+  - validateBasicMovement(Piece, Position, Position): boolean
+  - getPlayerTurn(): Colour?
+  + getLastMove(): Board
+  - createNextBoard(Board, Piece, Position, Position): Board
+  - validateSpecialMovement(Piece, Position, Position): Board?
+  - validateWinningCondition(Colour, Board): boolean
+  - changeTurn(): void
+}
+class GameVersion {
+  - winningConditions: List<WinningCondition>
+  - boardSize: int
+  - basicMovements: Map<PieceType, BasicMovementValidator[]>
+  - specialMovements: Map<PieceType, SpecialMovementValidator[]>
+  - rules: List<RuleController>
+  + getRules(): List<RuleController>
+  + getSpecialMovementsByPiece(PieceType): SpecialMovementValidator[]
+  + getWinningConditions(): List<WinningCondition>
+  + getBasicMovementsByPiece(PieceType): BasicMovementValidator[]
+  + getBasicMovements(): Map<PieceType, BasicMovementValidator[]>
+  + getBoardSize(): int
+}
+class HorizontalValidator {
+  ~ canJump: boolean
+  ~ maxSteps: int
+  + areObstacles(Board, Position, Position): boolean
+  + validateMove(Board, Position, Position): boolean
+}
+class KnightValidator {
+  + validateMove(Board, Position, Position): boolean
+}
+class Main {
+  + main(String[]): void
+}
+class Movement {
+  - direction: Direction
+  - canJump: boolean
+  - maxDistance: int
+}
+class PawnValidator {
+  ~ canJump: boolean
+  ~ forward: int
+  ~ backward: int
+  - isCoronation(Position): boolean
+  + isInPassant(Board, Board, Position, Position): boolean
+  + validateMove(Board, Position, Position): boolean
+  - movesDoubleBackward(int, int): boolean
+  - pieceExists(Position): boolean
+  - isEmpty(Position): boolean
+  - movesDiagonalBackward(int, int): boolean
+  - isDoubleMoveForward(int, int): boolean
+  - movesBackward(int, int): boolean
+  - movesDiagonalForward(int, int): boolean
+  - movesForward(int, int): boolean
+  - areDifferentColors(Position, Position): boolean
+}
+class Piece {
+  - hasMoved: boolean
+  - type: PieceType
+  - colour: Colour
+  + getColour(): Colour
+  + setHasMoved(): void
+  + getType(): PieceType
+  + hasMoved(): boolean
+}
+enum PieceType << enumeration >> {
+  + WHITE_PAWN: 
+  + BISHOP: 
+  + KING: 
+  + BLACK_PAWN: 
+  + KNIGHT: 
+  + QUEEN: 
+  + ROOK: 
+  + values(): PieceType[]
+  + valueOf(String): PieceType
+}
+class Player {
+  - colour: Colour
+  - name: String
+  - isTurn: boolean
+  + isTurn(): boolean
+  + getColour(): Colour
+  + setTurn(): void
+}
+class Position {
+  - row: int
+  - col: int
+  - piece: Piece
+  + copy(): Position
+  + hasPiece(): boolean
+  + getCol(): int
+  + getRow(): int
+  + getPiece(): Piece
+  + isEqual(Position): boolean
+  + setPiece(Piece): void
+}
+interface RuleController << interface >> {
+  + validateRule(Map<PieceType, BasicMovementValidator[]>, Board, Colour): boolean
+}
+enum SpecialMovementType << enumeration >> {
+  + CASTLING: 
+  + INVALID: 
+  + values(): SpecialMovementType[]
+  + valueOf(String): SpecialMovementType
+}
+interface SpecialMovementValidator << interface >> {
+  + move(Board, Position, Position): Board
+  + validateMove(Board, Position, Position): SpecialMovementType
+}
+class UnderCheck {
+  + validateRule(Map<PieceType, BasicMovementValidator[]>, Board, Colour): boolean
+}
+class Validator {
+  - getDirection(Position, Position): Direction
+  - areObstacles(Board, Position, Position, Direction): boolean
+  - getMovementLength(Position, Position, Direction): int
+  + validateMove(Board, Position, Position, Movement[]): boolean
+}
+class VerticalValidator {
+  ~ maxSteps: int
+  ~ canJump: boolean
+  + areObstacles(Board, Position, Position): boolean
+  + validateMove(Board, Position, Position): boolean
+}
+interface WinningCondition << interface >> {
+  + validateWinningCondition(Map<PieceType, BasicMovementValidator[]>, Board, Colour): boolean
+}
+
+Board                     -[#595959,dashed]->  Position                 : "«create»"
+Board                    "1" *-[#595959,plain]-> "board\n*" Position                 
+CastlingValidator         -[#595959,dashed]->  Board                    : "«create»"
+CastlingValidator         -[#595959,dashed]->  Position                 : "«create»"
+CastlingValidator         -[#008200,dashed]-^  SpecialMovementValidator 
+CheckMate                 -[#595959,dashed]->  Position                 : "«create»"
+CheckMate                 -[#008200,dashed]-^  RuleController           
+CheckMateValidator        -[#595959,dashed]->  Position                 : "«create»"
+CheckMateValidator        -[#008200,dashed]-^  WinningCondition         
+ConstructorHelper         -[#595959,dashed]->  Piece                    : "«create»"
+ConstructorHelper         -[#595959,dashed]->  Position                 : "«create»"
+CreateGame                -[#595959,dashed]->  CastlingValidator        : "«create»"
+CreateGame                -[#595959,dashed]->  CheckMateValidator       : "«create»"
+CreateGame                -[#595959,dashed]->  DiagonalValidator        : "«create»"
+CreateGame                -[#595959,dashed]->  Game                     : "«create»"
+CreateGame                -[#595959,dashed]->  GameVersion              : "«create»"
+CreateGame                -[#595959,dashed]->  HorizontalValidator      : "«create»"
+CreateGame                -[#595959,dashed]->  KnightValidator          : "«create»"
+CreateGame                -[#595959,dashed]->  PawnValidator            : "«create»"
+CreateGame                -[#595959,dashed]->  Player                   : "«create»"
+CreateGame                -[#595959,dashed]->  SpecialMovementValidator : "«create»"
+CreateGame                -[#595959,dashed]->  UnderCheck               : "«create»"
+CreateGame                -[#595959,dashed]->  VerticalValidator        : "«create»"
+DiagonalValidator         -[#595959,dashed]->  Position                 : "«create»"
+Game                     "1" *-[#595959,plain]-> "startingBoard\n1" Board                    
+Game                      -[#595959,dashed]->  Board                    : "«create»"
+Game                     "1" *-[#595959,plain]-> "version\n1" GameVersion              
+Game                     "1" *-[#595959,plain]-> "players\n*" Player                   
+GameVersion              "1" *-[#595959,plain]-> "basicMovements\n*" PieceType                
+GameVersion              "1" *-[#595959,plain]-> "rules\n*" RuleController           
+GameVersion              "1" *-[#595959,plain]-> "winningConditions\n*" WinningCondition         
+Main                      -[#595959,dashed]->  CastlingValidator        : "«create»"
+Main                      -[#595959,dashed]->  CheckMateValidator       : "«create»"
+Main                      -[#595959,dashed]->  DiagonalValidator        : "«create»"
+Main                      -[#595959,dashed]->  Game                     : "«create»"
+Main                      -[#595959,dashed]->  GameVersion              : "«create»"
+Main                      -[#595959,dashed]->  HorizontalValidator      : "«create»"
+Main                      -[#595959,dashed]->  KnightValidator          : "«create»"
+Main                      -[#595959,dashed]->  PawnValidator            : "«create»"
+Main                      -[#595959,dashed]->  Player                   : "«create»"
+Main                      -[#595959,dashed]->  SpecialMovementValidator : "«create»"
+Main                      -[#595959,dashed]->  UnderCheck               : "«create»"
+Main                      -[#595959,dashed]->  VerticalValidator        : "«create»"
+Movement                 "1" *-[#595959,plain]-> "direction\n1" Direction                
+Piece                    "1" *-[#595959,plain]-> "colour\n1" Colour                   
+Piece                    "1" *-[#595959,plain]-> "type\n1" PieceType                
+Player                   "1" *-[#595959,plain]-> "colour\n1" Colour                   
+Position                 "1" *-[#595959,plain]-> "piece\n1" Piece                    
+UnderCheck                -[#008200,dashed]-^  RuleController           
+@enduml
