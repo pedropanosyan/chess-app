@@ -1,7 +1,7 @@
-package classes;
+package checkers;
 
-import classes.enums.Colour;
-import classes.enums.PieceType;
+import checkers.enums.Colour;
+import checkers.enums.PieceType;
 
 public class Piece {
 
@@ -9,6 +9,7 @@ public class Piece {
     private final Colour colour;
     private String id;
     private boolean hasMoved = false;
+
 
     public Piece(PieceType name, Colour colour) {
         this.type = name;
@@ -24,14 +25,6 @@ public class Piece {
         return colour;
     }
 
-    public boolean hasMoved() {
-        return hasMoved;
-    }
-
-    public void setHasMoved() {
-        this.hasMoved = true;
-    }
-
     public String getId() {
         return id;
     }
@@ -39,4 +32,5 @@ public class Piece {
     public void setId(String id) {
         this.id = id;
     }
+
 }

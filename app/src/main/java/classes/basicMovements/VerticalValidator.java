@@ -4,6 +4,9 @@ import classes.Board;
 import classes.Piece;
 import classes.Position;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VerticalValidator implements BasicMovementValidator {
 
     boolean canJump;
@@ -26,7 +29,7 @@ public class VerticalValidator implements BasicMovementValidator {
 
         if (colDiff == 0 && rowDiff > 0) {
             if (!canJump) {
-                return !areObstacles(board, from, to) && colDiff <= this.maxSteps;
+                return !areObstacles(board, from, to) && rowDiff <= this.maxSteps;
             } else {
                 return colDiff <= this.maxSteps;
             }
@@ -34,7 +37,7 @@ public class VerticalValidator implements BasicMovementValidator {
     }
 
     public boolean areObstacles(Board board, Position from, Position to) {
-        int minRow = Math.min(from.getRow(), to.getRow());
+        int minRow = Math.min(from.getRow(), to.getRow())+1;
         int maxRow = Math.max(from.getRow(), to.getRow());
 
         while (minRow < maxRow) {
@@ -56,5 +59,38 @@ public class VerticalValidator implements BasicMovementValidator {
         newBoard[to.getRow()][to.getCol()].setPiece(piece);
         return new Board(newBoard);
     }
+
+    @Override
+    public List<Position> getValidMoves(Board board, Position from) {
+        List<Position> possibleMoves = new ArrayList<>();
+
+        int fromRow = from.getRow();
+        int fromCol = from.getCol();
+
+        int maxUpwardSteps = Math.min(fromRow, this.maxSteps);
+        int maxDownwardSteps = Math.min(7 - fromRow, this.maxSteps);
+
+        for (int i = 1; i <= maxUpwardSteps; i++) {
+            int newRow = fromRow - i;
+            Position newPosition = new Position(newRow, fromCol);
+
+            if (validateMove(board, from, newPosition)) {
+                possibleMoves.add(newPosition);
+            } else { break; }
+        }
+
+        for (int i = 1; i <= maxDownwardSteps; i++) {
+            int newRow = fromRow + i;
+            Position newPosition = new Position(newRow, fromCol);
+
+            if (validateMove(board, from, newPosition)) {
+                possibleMoves.add(newPosition);
+            } else {
+                break;
+            }
+        }
+        return possibleMoves;
+    }
+
 
 }

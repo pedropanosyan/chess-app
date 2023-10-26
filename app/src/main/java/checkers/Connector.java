@@ -1,4 +1,4 @@
-package classes;
+package checkers;
 
 import checkers.enums.Colour;
 import checkers.enums.PieceType;

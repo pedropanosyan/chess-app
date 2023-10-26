@@ -3,6 +3,10 @@ package classes.basicMovements;
 import classes.Board;
 import classes.Piece;
 import classes.Position;
+import classes.enums.PieceType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PawnValidator implements BasicMovementValidator {
 
@@ -41,11 +45,15 @@ public class PawnValidator implements BasicMovementValidator {
         if (movesBackward(rowDiff, colDiff) && isEmpty(to)) {
             return true;
         }
-        if (isDoubleMoveForward(rowDiff, colDiff) && isEmpty(to) && !hasMoved && !this.canJump) {
-            return board.getPiece(from.getRow() + 1, from.getCol()) == null;
+        if (isDoubleMoveForward(rowDiff, colDiff) && isEmpty(to)) {
+            if (!hasMoved || this.forward > 1) {
+                return board.getPiece(from.getRow() + 1, from.getCol()) == null;
+            }
         }
-        if (movesDoubleBackward(rowDiff, colDiff) && isEmpty(to) && !hasMoved && !this.canJump) {
-            return board.getPiece(from.getRow() - 1, from.getCol()) == null;
+        if (movesDoubleBackward(rowDiff, colDiff) && isEmpty(to)) {
+            if (!hasMoved || this.backward > 1) {
+                return board.getPiece(from.getRow() - 1, from.getCol()) == null;
+            }
         }
         if (movesDiagonalForward(rowDiff, colDiff) && pieceExists(to) && areDifferentColors(from, to)) {
             return true;
@@ -94,6 +102,31 @@ public class PawnValidator implements BasicMovementValidator {
 
     private boolean movesForward(int rowDiff, int colDiff) {
         return rowDiff == 1 && colDiff == 0 && this.forward > 0;
+    }
+
+    @Override
+    public List<Position> getValidMoves(Board board, Position from) {
+        int fromCol = from.getCol();
+        List<Position> positions = new ArrayList<>();
+        Piece piece = from.getPiece();
+        if (piece == null) return positions;
+        if (piece.getType() == PieceType.BLACK_PAWN) {
+            boolean intermediatePiece = board.getPiece(from.getRow() - 1, fromCol) != null;
+            if (intermediatePiece) return positions;
+            if (!piece.hasMoved()) {
+                positions.add(new Position(from.getRow() - 2, fromCol));
+            }
+            positions.add(new Position(from.getRow() - 1, fromCol));
+        }
+        else {
+            boolean intermediatePiece = board.getPiece(from.getRow() + 1, fromCol) != null;
+            if (intermediatePiece) return positions;
+            if (!piece.hasMoved()) {
+                positions.add(new Position(from.getRow() + 2, fromCol));
+            }
+            positions.add(new Position(from.getRow() + 1, fromCol));
+        }
+        return positions;
     }
 
 }

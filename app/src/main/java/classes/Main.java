@@ -2,6 +2,7 @@ package classes;
 
 import classes.enums.Colour;
 import classes.gameInterface.CreateClassicGame;
+import common.Game;
 
 public class Main {
 

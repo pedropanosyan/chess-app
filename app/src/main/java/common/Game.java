@@ -1,9 +1,13 @@
-package classes;
+package common;
 
+import checkers.move.Move;
+import classes.*;
 import classes.basicMovements.BasicMovementValidator;
 import classes.enums.Colour;
 import classes.rules.RuleController;
 import classes.winningValidator.WinningCondition;
+import common.exceptions.EndGameException;
+import common.exceptions.InvalidMoveException;
 
 import java.util.Stack;
 
@@ -11,15 +15,30 @@ public class Game {
 
     private final GameVersion version;
     private Stack<Board> moveHistory = new Stack<>();
-    private final Board startingBoard;
     private final Player[] players;
 
-    public Game(GameVersion version, Player[] players) {
+    public Game(GameVersion version, Board board, Player[] players) {
         this.players = players;
         this.version = version;
-        Position[][] initializeBoard = ConstructorHelper.initializeBoard(version);
-        this.startingBoard = new Board(initializeBoard);
-        this.moveHistory.push(startingBoard);
+        this.moveHistory.push(board);
+    }
+
+
+    public checkers.Board move(checkers.Position from, checkers.Position to) throws InvalidMoveException, EndGameException {
+        if (!from.hasPiece()) throw new InvalidMoveException("Trying to move from an empty position");
+        checkers.Piece piece = from.getPiece();
+        checkers.Board newBoard = checkIfValidMovement(piece, from, to);
+        if (checkWinningConditions(newBoard, piece.getColour())) throw new EndGameException();
+        return submitMove(newBoard);
+    }
+
+    private checkers.Board checkIfValidMovement(checkers.Piece piece, checkers.Position from, checkers.Position to) throws InvalidMoveException {
+        try {
+            Move move = this.version.getBasicMovementsByPiece(piece.getType());
+            return move.move(getLastMove(), from, to);
+        } catch (InvalidMoveException e) {
+            throw new InvalidMoveException(e.getMessage());
+        }
     }
 
     public Board move(Position from, Position to) {
@@ -31,14 +50,24 @@ public class Game {
         Position realToPosition = board.getPosition(to.getRow(), to.getCol());
 
         if (piece == null || playerColour != piece.getColour()) return getLastMove();
-        if (validateWinningCondition(playerColour, board)) return getLastMove();
 
         Board newBoard = validateBasicMovement(piece, realFromPosition, realToPosition);
 
         if (newBoard != null && validateRule(playerColour, newBoard)) {
+            if (validateWinningCondition(getOppositeColour(playerColour), newBoard)) {
+                throw new RuntimeException("Game over");
+            };
             return returnBoard(piece, newBoard);
+        } else if (newBoard != null) {
+            if (validateWinningCondition(getOppositeColour(playerColour), newBoard)) {
+                throw new RuntimeException("Game over");
+            };
         }
         return getLastMove();
+    }
+
+    private Colour getOppositeColour(Colour colour) {
+        return colour == Colour.WHITE ? Colour.BLACK : Colour.WHITE;
     }
 
     private Board validateBasicMovement(Piece piece, Position from, Position to) {
@@ -49,7 +78,7 @@ public class Game {
         return null;
     }
 
-    private boolean validateWinningCondition(Colour colour, Board board) {
+    public boolean validateWinningCondition(Colour colour, Board board) {
         for (WinningCondition winningCondition : version.getWinningConditions()) {
             if (winningCondition.validateWinningCondition(this.getVersion().getBasicMovements(), board, colour)) return true;
         }
@@ -91,10 +120,6 @@ public class Game {
 
     public GameVersion getVersion() {
         return version;
-    }
-
-    public Board getStartingBoard() {
-        return startingBoard;
     }
 
     private void changeTurn() {

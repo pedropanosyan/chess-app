@@ -25,14 +25,14 @@ public class ConstructorHelper {
 
     private static void initializeChessPieces(Position[][] board, Map<PieceType, BasicMovementValidator[]> movementsMap) {
         PieceType[] initialRow = {
-                PieceType.ROOK,
+                PieceType.CHANCELLOR,
                 PieceType.KNIGHT,
                 PieceType.BISHOP,
                 PieceType.QUEEN,
                 PieceType.KING,
                 PieceType.BISHOP,
                 PieceType.KNIGHT,
-                PieceType.ROOK
+                PieceType.CHANCELLOR,
         };
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {

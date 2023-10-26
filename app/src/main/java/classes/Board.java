@@ -50,7 +50,28 @@ public class Board {
         return null;
     }
 
+    public Position[][] getBoard() {
+        return board;
+    }
+
     public boolean isPieceUnderAttack(Map<PieceType, BasicMovementValidator[]> basicMovementValidators, Position kingPosition, Colour colour) {
+        for (Position[] positions : board) {
+            for (Position position : positions) {
+                Piece piece = position.getPiece();
+                if (piece != null && piece.getColour() != colour) {
+                    BasicMovementValidator[] movements = basicMovementValidators.get(piece.getType());
+                    for (BasicMovementValidator movement : movements) {
+                        if (movement.validateMove(this, position, kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean kingUnderAttack(Map<PieceType, BasicMovementValidator[]> basicMovementValidators, Position kingPosition, Colour colour) {
         for (Position[] positions : board) {
             for (Position position : positions) {
                 Piece piece = position.getPiece();

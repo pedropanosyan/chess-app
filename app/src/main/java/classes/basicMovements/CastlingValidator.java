@@ -3,7 +3,12 @@ package classes.basicMovements;
 import classes.Board;
 import classes.Piece;
 import classes.Position;
+import classes.enums.Colour;
 import classes.enums.PieceType;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class CastlingValidator implements BasicMovementValidator {
 
     @Override
@@ -11,39 +16,56 @@ public class CastlingValidator implements BasicMovementValidator {
         int rowDiff = Math.abs(to.getRow() - from.getRow());
         int colDiff = Math.abs(to.getCol() - from.getCol());
         Piece king = from.getPiece();
-        Piece rook = getRook(board, colDiff);
+        Piece rook = getRook(board, colDiff, king.getColour());
         return kingNotMoved(king) && rookNotMoved(rook) &&
                 isCastling(king, colDiff, rowDiff) && !areObstacles(board, from, to);
     }
 
     @Override
     public Board move(Board board, Position from, Position to) {
-        int colDiff = Math.abs(to.getCol() - from.getCol());
+        int size = board.getLength()-1;
+        int colDiff = (to.getCol() - from.getCol());
         Piece king = board.getPiece(from.getRow(), from.getCol());
-        Piece rook = getRook(board, colDiff);
-
+        Piece rook = getRook(board, colDiff, king.getColour());
         Position[][] newBoard = board.copyBoard();
 
-        if (colDiff == 2) {
-            newBoard[from.getRow()][7].setPiece(null);
-            newBoard[from.getRow()][from.getCol()].setPiece(null);
-            newBoard[from.getRow()][6].setPiece(king);
-            newBoard[from.getRow()][5].setPiece(rook);
-        }
-        else {
+        if (colDiff == -2) {
             newBoard[from.getRow()][0].setPiece(null);
-            newBoard[from.getRow()][1].setPiece(king);
-            newBoard[from.getRow()][2].setPiece(rook);
+            newBoard[from.getRow()][from.getCol()].setPiece(null);
+            newBoard[from.getRow()][2].setPiece(king);
+            newBoard[from.getRow()][3].setPiece(rook);
+        }
+        else if (colDiff == 2){
+            newBoard[from.getRow()][size].setPiece(null);
+            newBoard[from.getRow()][from.getCol()].setPiece(null);
+            newBoard[from.getRow()][size-1].setPiece(king);
+            newBoard[from.getRow()][size-2].setPiece(rook);
         }
         return new Board(newBoard);
     }
 
-    private Piece getRook(Board board, int colDiff) {
+    @Override
+    public List<Position> getValidMoves(Board board, Position from) {
+        return new ArrayList<>();
+    }
+
+    private Piece getRook(Board board, int colDiff, Colour colour) {
+        int size = board.getLength()-1;
         if (colDiff == 2) {
-            return board.getPiece(0, 7);
+            if (colour == Colour.WHITE) {
+                return board.getPiece(0, size);
+            }
+            else {
+                return board.getPiece(size, size);
+            }
         }
-        else if (colDiff == 3) {
-            return board.getPiece(0, 0);
+        else if (colDiff == -2) {
+            if (colour == Colour.WHITE) {
+                return board.getPiece(0, 0);
+            }
+            else {
+                return board.getPiece(size, 0);
+            }
         }
         return null;
     }
@@ -75,6 +97,8 @@ public class CastlingValidator implements BasicMovementValidator {
         }
         return false;
     }
+
+
 
 
 }
