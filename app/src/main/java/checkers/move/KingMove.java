@@ -1,10 +1,11 @@
 package checkers.move;
 
-import checkers.Board;
-import checkers.Piece;
-import checkers.Position;
+import common.Board;
+import common.Piece;
+import common.Position;
 import common.exceptions.InvalidMoveException;
-import checkers.movementValidator.MovementValidator;
+import common.movementValidator.MovementValidator;
+import common.move.Move;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class KingMove implements Move {
     }
 
     public List<MovementValidator> getMovementValidators() {
-        return movementValidators;
+        return this.movementValidators;
     }
 
     private boolean validateMovement(Board board, Position from, Position to) {
@@ -85,8 +86,6 @@ public class KingMove implements Move {
     private boolean isValidPosition(int row, int col, int size) {
         return row >= 0 && row < size && col >= 0 && col < size;
     }
-
-
 
     private boolean otherColourPieceInTheMiddle(Board board, Position from, Position to) {
         int rowDirection = (to.getRow() - from.getRow()) > 0 ? 1 : -1;

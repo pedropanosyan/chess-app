@@ -1,12 +1,13 @@
 package checkers.move;
 
-import checkers.Board;
-import checkers.Piece;
-import checkers.Position;
-import checkers.enums.Colour;
-import checkers.enums.PieceType;
+import common.Board;
+import common.Piece;
+import common.Position;
+import common.enums.Colour;
+import common.enums.PieceType;
+import common.move.Move;
+import common.movementValidator.MovementValidator;
 import common.exceptions.InvalidMoveException;
-import checkers.movementValidator.MovementValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class PawnMove implements Move {
     }
 
     public List<MovementValidator> getMovementValidators() {
-        return movementValidators;
+        return this.movementValidators;
     }
 
     private boolean validateMovement(Board board, Position from, Position to) {

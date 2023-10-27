@@ -1,7 +1,10 @@
 package checkers;
 
-import checkers.enums.Colour;
-import checkers.enums.PieceType;
+import common.Board;
+import common.Piece;
+import common.Position;
+import common.enums.Colour;
+import common.enums.PieceType;
 
 public class CheckersBoardConstructor {
 

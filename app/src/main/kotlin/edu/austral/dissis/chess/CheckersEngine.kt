@@ -1,8 +1,8 @@
 package edu.austral.dissis.chess
 
-import checkers.Connector
 import checkers.GameCreator
-import checkers.enums.Colour
+import common.Connector
+import common.enums.Colour
 import common.exceptions.EndGameException
 import common.exceptions.InvalidMoveException
 

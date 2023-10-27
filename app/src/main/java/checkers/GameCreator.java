@@ -1,6 +1,12 @@
 package checkers;
 
-import checkers.enums.PieceType;
+import common.Board;
+import common.Game;
+import common.GameVersion;
+import common.Player;
+import common.enums.Colour;
+import common.enums.PieceType;
+
 import checkers.move.KingMove;
 import checkers.move.PawnMove;
 import checkers.movementValidator.KingMovementValidator;
@@ -27,7 +33,11 @@ public class GameCreator {
         ), List.of(noPlaceToMove, noPiecesRemaining) , size);
         Board board = CheckersBoardConstructor.initializeBoard(size);
 
-        return new Game(gameVersion, board);
+        Player player1 = new Player("Player1", Colour.WHITE);
+        Player player2 = new Player("Player2", Colour.BLACK);
+        Player[] players = new Player[]{player1, player2};
+
+        return new Game(gameVersion, board, players);
     }
 
 }

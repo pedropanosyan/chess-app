@@ -1,14 +1,13 @@
 package checkers.winningValidator;
 
-import checkers.Board;
-import checkers.GameVersion;
-import checkers.Piece;
-import checkers.Position;
-import checkers.enums.Colour;
-import checkers.enums.PieceType;
-import checkers.move.Move;
-import checkers.movementValidator.MovementValidator;
-import classes.Validator;
+import common.Board;
+import common.Piece;
+import common.Position;
+import common.enums.Colour;
+import common.enums.PieceType;
+import common.move.Move;
+import common.movementValidator.MovementValidator;
+import common.winningValidator.WinningValidator;
 
 import java.util.List;
 import java.util.Map;

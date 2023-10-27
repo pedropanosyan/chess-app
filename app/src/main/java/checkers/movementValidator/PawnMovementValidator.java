@@ -1,9 +1,10 @@
 package checkers.movementValidator;
 
-import checkers.Board;
-import checkers.Piece;
-import checkers.Position;
-import checkers.enums.Colour;
+import common.Board;
+import common.Piece;
+import common.Position;
+import common.enums.Colour;
+import common.movementValidator.MovementValidator;
 
 public class PawnMovementValidator implements MovementValidator {
 

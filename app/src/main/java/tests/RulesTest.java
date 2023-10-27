@@ -1,4 +1,4 @@
-package tests;
-
-public class RulesTest {
-}
+//package tests;
+//
+//public class RulesTest {
+//}

@@ -1,10 +1,11 @@
 package checkers.winningValidator;
 
-import checkers.Board;
-import checkers.Position;
-import checkers.enums.Colour;
-import checkers.enums.PieceType;
-import checkers.move.Move;
+import common.Board;
+import common.Position;
+import common.enums.Colour;
+import common.enums.PieceType;
+import common.move.Move;
+import common.winningValidator.WinningValidator;
 
 import java.util.Map;
 
