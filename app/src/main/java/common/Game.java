@@ -39,13 +39,12 @@ public class Game {
 
     private boolean checkWinningConditions(Board board, Colour colour) {
         for (WinningValidator winningCondition : this.version.getWinningConditions()) {
-            if (winningCondition.validated(this.version.getMove(), board, colour)) {
+            if (winningCondition.validated(this.version.getMove(), board, getOppositeColour(colour))) {
                 return true;
             }
         }
         return false;
     }
-
 
     private Board submitMove(Board board) {
         this.moveHistory.push(board);

@@ -8,7 +8,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//public class Connector {
+//public class Adapter {
 //
 //    public static BoardSize adaptBoard(checkers.Board board){
 //        return new BoardSize(board.getLength(), board.getLength());

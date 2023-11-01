@@ -1,4 +1,4 @@
-package classes.gameInterface;
+package chess.gameInterface;
 
 public interface GameInterface {
 }

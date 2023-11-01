@@ -8,7 +8,7 @@ import edu.austral.dissis.chess.gui.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Connector {
+public class Adapter {
 
     public static BoardSize adaptBoard(common.Board board){
         return new BoardSize(board.getLength(), board.getLength());
@@ -28,9 +28,7 @@ public class Connector {
     }
 
     public static List<ChessPiece> adaptPieces(List<common.Position> positions){
-
         List<ChessPiece> pieces = new ArrayList<>(positions.size());
-
         for (common.Position position : positions) {
             common.Piece piece = position.getPiece();
             if (piece != null) {
@@ -42,7 +40,7 @@ public class Connector {
 
     private static String adaptName(PieceType name){
         return switch (name) {
-            case PAWN -> "pawn";
+            case WHITE_PAWN, BLACK_PAWN, PAWN -> "pawn";
             case KING -> "king";
             case QUEEN -> "queen";
             case BISHOP -> "bishop";
@@ -50,7 +48,6 @@ public class Connector {
             case ROOK -> "rook";
         };
     }
-
 
     public static List<ChessPiece> getPieces(common.Board board) {
         List<common.Position> positions = new ArrayList<>();

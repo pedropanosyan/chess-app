@@ -6,6 +6,9 @@ import common.Position;
 import common.enums.Colour;
 import common.movementValidator.MovementValidator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KingMovementValidator implements MovementValidator {
 
     @Override
@@ -26,6 +29,52 @@ public class KingMovementValidator implements MovementValidator {
         if (sameColourPieceInTheMiddle(board, board.getPosition(from), board.getPosition(to))) { return false; }
 
         return true;
+    }
+
+    @Override
+    public List<Position> getPossiblePositions(Board board, Position from) {
+        List<Position> possiblePositions = new ArrayList<>();
+
+        int fromRow = from.getRow();
+        int fromCol = from.getCol();
+
+        int[] rowOffsets = { -1, -1, 1, 1 };
+        int[] colOffsets = { -1, 1, -1, 1 };
+
+        for (int i = 0; i < 4; i++) {
+            for (int step = 1; step <= board.getLength(); step++) {
+                int newRow = fromRow + rowOffsets[i] * step;
+                int newCol = fromCol + colOffsets[i] * step;
+                if (!isValidPosition(newRow, newCol, board.getLength())) break;
+                possiblePositions.add(new Position(newRow, newCol));
+            }
+        }
+        possiblePositions.removeIf(position -> !validateMove(board, from, position));
+        possiblePositions.removeIf(position -> !otherColourPieceInTheMiddle(board, board.getPosition(from), board.getPosition(position)));
+        return possiblePositions;
+    }
+
+    private boolean isValidPosition(int row, int col, int size) {
+        return row >= 0 && row < size && col >= 0 && col < size;
+    }
+
+    private boolean otherColourPieceInTheMiddle(Board board, Position from, Position to) {
+        int rowDirection = (to.getRow() - from.getRow()) > 0 ? 1 : -1;
+        int colDirection = (to.getCol() - from.getCol()) > 0 ? 1 : -1;
+
+        int currentRow = from.getRow() + rowDirection;
+        int currentCol = from.getCol() + colDirection;
+
+        while (currentRow != to.getRow() && currentCol != to.getCol()) {
+            Position currentPosition = board.getPosition(currentRow, currentCol);
+            if (currentPosition.hasPiece() && currentPosition.getPiece().getColour() != from.getPiece().getColour()) {
+                return true;
+            }
+
+            currentRow += rowDirection;
+            currentCol += colDirection;
+        }
+        return false;
     }
 
     private boolean nullPieces(Position from, Position to) {

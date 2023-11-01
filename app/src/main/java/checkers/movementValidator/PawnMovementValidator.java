@@ -6,6 +6,9 @@ import common.Position;
 import common.enums.Colour;
 import common.movementValidator.MovementValidator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PawnMovementValidator implements MovementValidator {
 
     @Override
@@ -66,6 +69,23 @@ public class PawnMovementValidator implements MovementValidator {
         Piece middlePiece = board.getPiece(middlePosition.getRow(), middlePosition.getCol());
         Piece fromPiece = board.getPiece(from.getRow(), from.getCol());
         return middlePosition.hasPiece() && arePiecesFromDifferentColour(fromPiece, middlePiece);
+    }
+
+    @Override
+    public List<Position> getPossiblePositions(Board board, Position from) {
+        List<Position> possiblePositions = new ArrayList<>();
+        Piece piece = board.getPiece(from.getRow(), from.getCol());
+        if (piece == null) return possiblePositions;
+        if (piece.getColour() == Colour.WHITE) {
+            possiblePositions.add(new Position(from.getRow() + 2, from.getCol() + 2));
+            possiblePositions.add(new Position(from.getRow() + 2, from.getCol() - 2));
+        } else {
+            possiblePositions.add(new Position(from.getRow() - 2, from.getCol() + 2));
+            possiblePositions.add(new Position(from.getRow() - 2, from.getCol() - 2));
+        }
+
+        possiblePositions.removeIf(position -> !validateMove(board, from, position));
+        return possiblePositions;
     }
 
 }

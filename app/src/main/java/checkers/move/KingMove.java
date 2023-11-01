@@ -27,7 +27,7 @@ public class KingMove implements Move {
 
         Board afterMovingBoard = kingMovement(newBoard, board.getPosition(from), to);
         if (!otherColourPieceInTheMiddle(board, board.getPosition(from), to)) return afterMovingBoard;
-        List<Position> possiblePositions = getPossiblePositions(afterMovingBoard, to);
+        List<Position> possiblePositions = fetchPossiblePositions(afterMovingBoard, to);
         if (possiblePositions.isEmpty()) return afterMovingBoard;
         return this.move(afterMovingBoard, board.getPosition(to), board.getPosition(possiblePositions.get(0)));
     }
@@ -61,32 +61,6 @@ public class KingMove implements Move {
         return board;
     }
 
-    private List<Position> getPossiblePositions(Board board, Position from) {
-        List<Position> possiblePositions = new ArrayList<>();
-
-        int fromRow = from.getRow();
-        int fromCol = from.getCol();
-
-        int[] rowOffsets = { -1, -1, 1, 1 };
-        int[] colOffsets = { -1, 1, -1, 1 };
-
-        for (int i = 0; i < 4; i++) {
-            for (int step = 1; step <= board.getLength(); step++) {
-                int newRow = fromRow + rowOffsets[i] * step;
-                int newCol = fromCol + colOffsets[i] * step;
-                if (!isValidPosition(newRow, newCol, board.getLength())) break;
-                possiblePositions.add(new Position(newRow, newCol));
-            }
-        }
-        possiblePositions.removeIf(position -> !validateMovement(board, from, position));
-        possiblePositions.removeIf(position -> !otherColourPieceInTheMiddle(board, board.getPosition(from), board.getPosition(position)));
-        return possiblePositions;
-    }
-
-    private boolean isValidPosition(int row, int col, int size) {
-        return row >= 0 && row < size && col >= 0 && col < size;
-    }
-
     private boolean otherColourPieceInTheMiddle(Board board, Position from, Position to) {
         int rowDirection = (to.getRow() - from.getRow()) > 0 ? 1 : -1;
         int colDirection = (to.getCol() - from.getCol()) > 0 ? 1 : -1;
@@ -105,4 +79,13 @@ public class KingMove implements Move {
         }
         return false;
     }
+
+    private List<Position> fetchPossiblePositions(Board board, Position from) {
+        List<Position> possiblePositions = new ArrayList<>();
+        for (MovementValidator validator : movementValidators) {
+            possiblePositions.addAll(validator.getPossiblePositions(board, from));
+        }
+        return possiblePositions;
+    }
+
 }

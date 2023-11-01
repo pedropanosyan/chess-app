@@ -23,15 +23,19 @@ public class GameVersion {
     }
 
     public Move getBasicMovementsByPiece(PieceType pieceType) {
-        return move.get(pieceType);
+        return this.move.get(pieceType);
     }
 
     public List<WinningValidator> getWinningConditions() {
-        return winningConditions;
+        return this.winningConditions;
     }
 
     public Map<PieceType, Move> getMove() {
-        return move;
+        return this.move;
+    }
+
+    public int getBoardSize() {
+        return this.boardSize;
     }
 
 }

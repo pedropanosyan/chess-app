@@ -1,4 +1,4 @@
-package classes.basicMovements;
+package chess.basicMovements;
 
 import common.Board;
 import common.Piece;
@@ -52,46 +52,37 @@ public class VerticalValidator implements MovementValidator {
         else return false;
     }
 
-//    @Override
-//    public Board move(Board board, Position from, Position to) {
-//        Piece piece = board.getPiece(from.getRow(), from.getCol());
-//        Position[][] newBoard = board.copyBoard();
-//        newBoard[from.getRow()][from.getCol()].setPiece(null);
-//        newBoard[to.getRow()][to.getCol()].setPiece(piece);
-//        return new Board(newBoard);
-//    }
-//
-//    @Override
-//    public List<Position> getValidMoves(Board board, Position from) {
-//        List<Position> possibleMoves = new ArrayList<>();
-//
-//        int fromRow = from.getRow();
-//        int fromCol = from.getCol();
-//
-//        int maxUpwardSteps = Math.min(fromRow, this.maxSteps);
-//        int maxDownwardSteps = Math.min(7 - fromRow, this.maxSteps);
-//
-//        for (int i = 1; i <= maxUpwardSteps; i++) {
-//            int newRow = fromRow - i;
-//            Position newPosition = new Position(newRow, fromCol);
-//
-//            if (validateMove(board, from, newPosition)) {
-//                possibleMoves.add(newPosition);
-//            } else { break; }
-//        }
-//
-//        for (int i = 1; i <= maxDownwardSteps; i++) {
-//            int newRow = fromRow + i;
-//            Position newPosition = new Position(newRow, fromCol);
-//
-//            if (validateMove(board, from, newPosition)) {
-//                possibleMoves.add(newPosition);
-//            } else {
-//                break;
-//            }
-//        }
-//        return possibleMoves;
-//    }
+    @Override
+    public List<Position> getPossiblePositions(Board board, Position from) {
+        List<Position> possibleMoves = new ArrayList<>();
+
+        int fromRow = from.getRow();
+        int fromCol = from.getCol();
+
+        int maxUpwardSteps = Math.min(fromRow, this.maxSteps);
+        int maxDownwardSteps = Math.min(7 - fromRow, this.maxSteps);
+
+        for (int i = 1; i <= maxUpwardSteps; i++) {
+            int newRow = fromRow - i;
+            Position newPosition = new Position(newRow, fromCol);
+
+            if (validateMove(board, from, newPosition)) {
+                possibleMoves.add(newPosition);
+            } else { break; }
+        }
+
+        for (int i = 1; i <= maxDownwardSteps; i++) {
+            int newRow = fromRow + i;
+            Position newPosition = new Position(newRow, fromCol);
+
+            if (validateMove(board, from, newPosition)) {
+                possibleMoves.add(newPosition);
+            } else {
+                break;
+            }
+        }
+        return possibleMoves;
+    }
 
 
 }

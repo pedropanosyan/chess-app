@@ -33,7 +33,7 @@ public class PawnMove implements Move {
         if (!pieceInTheMiddle && colDiff == 1) return normalMovement(newBoard, from, to, false);
 
         Board afterMovingBoard = normalMovement(newBoard, from, to, true);
-        List<Position> possiblePositions = getPossiblePositions(afterMovingBoard, to);
+        List<Position> possiblePositions = fetchPossiblePositions(afterMovingBoard, to);
         if (possiblePositions.isEmpty()) return afterMovingBoard;
         return this.move(afterMovingBoard, to, possiblePositions.get(0));
     }
@@ -85,20 +85,13 @@ public class PawnMove implements Move {
         }
     }
 
-    private List<Position> getPossiblePositions(Board board, Position from) {
+    private List<Position> fetchPossiblePositions(Board board, Position from) {
         List<Position> possiblePositions = new ArrayList<>();
-        Piece piece = board.getPiece(from.getRow(), from.getCol());
-        if (piece == null) return possiblePositions;
-        if (piece.getColour() == Colour.WHITE) {
-            possiblePositions.add(new Position(from.getRow() + 2, from.getCol() + 2));
-            possiblePositions.add(new Position(from.getRow() + 2, from.getCol() - 2));
-        } else {
-            possiblePositions.add(new Position(from.getRow() - 2, from.getCol() + 2));
-            possiblePositions.add(new Position(from.getRow() - 2, from.getCol() - 2));
+        for (MovementValidator validator : movementValidators) {
+            possiblePositions.addAll(validator.getPossiblePositions(board, from));
         }
-
-        possiblePositions.removeIf(position -> !validateMovement(board, from, position));
         return possiblePositions;
     }
+
 
 }

@@ -4,6 +4,11 @@ import common.Piece;
 import common.Position;
 import common.enums.Colour;
 import common.enums.PieceType;
+import common.move.Move;
+import common.movementValidator.MovementValidator;
+
+import java.util.List;
+import java.util.Map;
 
 public class Board {
 
@@ -23,6 +28,23 @@ public class Board {
 
     public Position getPosition(Position position) {
         return board[position.getRow()][position.getCol()];
+    }
+
+    public boolean isPieceUnderAttack(Map<PieceType, Move> moveMap, Position kingPosition, Colour colour) {
+        for (Position[] positions : board) {
+            for (Position position : positions) {
+                Piece piece = position.getPiece();
+                if (piece != null && piece.getColour() != colour) {
+                    List<MovementValidator> movements = moveMap.get(piece.getType()).getMovementValidators();
+                    for (MovementValidator movement : movements) {
+                        if (movement.validateMove(this, position, kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public Position searchPiecePosition(Piece piece) {
