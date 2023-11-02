@@ -59,7 +59,6 @@ public class Board {
         return false;
     }
 
-
     public int getLength() {
         return this.board[0].length;
     }

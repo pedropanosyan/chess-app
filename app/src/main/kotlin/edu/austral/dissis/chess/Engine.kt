@@ -5,11 +5,12 @@ import common.enums.Colour
 import common.exceptions.EndGameException
 import common.exceptions.InvalidMoveException
 import common.gameCreator.CheckersGameConstructor
+import common.gameCreator.ChessGameConstructor
 import edu.austral.dissis.chess.gui.*
 
 class Engine: GameEngine {
 
-    private var myGame = CheckersGameConstructor.createClassicGame(12)
+    private var myGame = CheckersGameConstructor.createClassicGame(8)
     private var currentPlayer = Colour.WHITE
 
 

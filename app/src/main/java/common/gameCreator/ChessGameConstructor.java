@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class ChessGameConstructor implements GameCreatorInterface{
 
-    public static Game createClassicGame(Player p1, Player p2, int size) {
+    public static Game createClassicGame(int size) {
         DiagonalValidator diagonalValidator = new DiagonalValidator(false);
         DiagonalValidator diagonalKingValidator = new DiagonalValidator(false, 1);
         HorizontalValidator horizontalValidator = new HorizontalValidator(false);
