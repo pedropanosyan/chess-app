@@ -38,41 +38,6 @@ public class HorizontalValidator implements MovementValidator {
         return false;
     }
 
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        List<Position> possibleMoves = new ArrayList<>();
-
-        int fromRow = from.getRow();
-        int fromCol = from.getCol();
-
-        int maxLeftSteps = Math.min(fromCol, this.maxSteps);
-        int maxRightSteps = Math.min(7 - fromCol, this.maxSteps);
-
-        for (int i = 1; i <= maxLeftSteps; i++) {
-            int newCol = fromCol - i;
-            Position newPosition = new Position(fromRow, newCol);
-
-            if (validateMove(board, from, newPosition)) {
-                possibleMoves.add(newPosition);
-            } else {
-                break;
-            }
-        }
-
-        for (int i = 1; i <= maxRightSteps; i++) {
-            int newCol = fromCol + i;
-            Position newPosition = new Position(fromRow, newCol);
-
-            if (validateMove(board, from, newPosition)) {
-                possibleMoves.add(newPosition);
-            } else {
-                break;
-            }
-        }
-
-        return possibleMoves;
-    }
-
     public boolean areObstacles(Board board, Position from, Position to){
         int minCol = Math.min(from.getCol(), to.getCol())+1;
         int maxCol = Math.max(from.getCol(), to.getCol());

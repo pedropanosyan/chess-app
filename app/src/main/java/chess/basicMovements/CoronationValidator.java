@@ -6,8 +6,6 @@ import common.Position;
 import common.enums.PieceType;
 import common.movementValidator.MovementValidator;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class CoronationValidator implements MovementValidator {
 
@@ -24,11 +22,6 @@ public class CoronationValidator implements MovementValidator {
         }
         return false;
 
-    }
-
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        return new ArrayList<>();
     }
 
     private boolean movesForward(int rowDiff, int colDiff, Piece piece) {

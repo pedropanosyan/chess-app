@@ -52,37 +52,4 @@ public class VerticalValidator implements MovementValidator {
         else return false;
     }
 
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        List<Position> possibleMoves = new ArrayList<>();
-
-        int fromRow = from.getRow();
-        int fromCol = from.getCol();
-
-        int maxUpwardSteps = Math.min(fromRow, this.maxSteps);
-        int maxDownwardSteps = Math.min(7 - fromRow, this.maxSteps);
-
-        for (int i = 1; i <= maxUpwardSteps; i++) {
-            int newRow = fromRow - i;
-            Position newPosition = new Position(newRow, fromCol);
-
-            if (validateMove(board, from, newPosition)) {
-                possibleMoves.add(newPosition);
-            } else { break; }
-        }
-
-        for (int i = 1; i <= maxDownwardSteps; i++) {
-            int newRow = fromRow + i;
-            Position newPosition = new Position(newRow, fromCol);
-
-            if (validateMove(board, from, newPosition)) {
-                possibleMoves.add(newPosition);
-            } else {
-                break;
-            }
-        }
-        return possibleMoves;
-    }
-
-
 }

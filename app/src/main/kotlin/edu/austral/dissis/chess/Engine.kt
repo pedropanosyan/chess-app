@@ -1,36 +1,33 @@
 package edu.austral.dissis.chess;
 
 import common.Adapter
-import common.Player
 import common.enums.Colour
-import chess.gameInterface.CreateClassicGame
 import common.exceptions.EndGameException
 import common.exceptions.InvalidMoveException
+import common.gameCreator.CheckersGameConstructor
 import edu.austral.dissis.chess.gui.*
 
-class ChessEngine: GameEngine {
+class Engine: GameEngine {
 
-    private val pedro = Player("Pedro", Colour.WHITE)
-    private val facundo = Player("Facundo", Colour.BLACK)
-
-    private val myGame = CreateClassicGame.createClassicGame(pedro, facundo)
+    private var myGame = CheckersGameConstructor.createClassicGame(12)
     private var currentPlayer = Colour.WHITE
 
 
     override fun applyMove(move: Move): MoveResult {
         val fromPos = Adapter.fromHisToMinePosition(move.from)
-        val realFromPos = myGame.lastMove.getPosition(fromPos.row, fromPos.col)
-        val fromPiece = myGame.lastMove.getPiece(fromPos.row, fromPos.col)
+        val realFromPos = myGame.board.getPosition(fromPos.row, fromPos.col)
+        val fromPiece = myGame.board.getPiece(fromPos.row, fromPos.col)
         val toPos = Adapter.fromHisToMinePosition(move.to)
-        val realToPos = myGame.lastMove.getPosition(toPos.row, toPos.col)
+        val realToPos = myGame.board.getPosition(toPos.row, toPos.col)
 
         if (fromPiece == null) return InvalidMove("No piece in from position")
 
         try {
             if (fromPiece.colour != currentPlayer) return InvalidMove("Piece does not belong to current player")
-            val newBoard = myGame.move(realFromPos, realToPos)
+            val newGame = myGame.move(realFromPos, realToPos)
+            myGame = newGame
             currentPlayer = if (currentPlayer == Colour.WHITE) Colour.BLACK else Colour.WHITE
-            return NewGameState(Adapter.getPieces(newBoard), Adapter.adaptColour(currentPlayer))
+            return NewGameState(Adapter.getPieces(newGame.board), Adapter.adaptColour(currentPlayer))
         } catch (e: InvalidMoveException) {
             return e.message?.let { InvalidMove(it) }!!
         } catch (e: EndGameException) {
@@ -40,7 +37,7 @@ class ChessEngine: GameEngine {
 
     override fun init(): InitialState {
         return InitialState(
-            Adapter.adaptBoard(myGame.lastMove),(Adapter.getPieces(myGame.lastMove)),
+            Adapter.adaptBoard(myGame.board),(Adapter.getPieces(myGame.board)),
             PlayerColor.WHITE
         )
     }

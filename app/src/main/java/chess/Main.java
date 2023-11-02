@@ -1,7 +1,7 @@
 //package classes;
 //
 //import classes.enums.Colour;
-//import classes.gameInterface.CreateClassicGame;
+//import classes.gameInterface.ChessGameConstructor;
 //import common.Game;
 //
 //public class Main {
@@ -10,7 +10,7 @@
 //
 //        Player pedro = new Player("Pedro", Colour.WHITE, true);
 //        Player facundo = new Player("Facundo", Colour.BLACK, false);
-//        Game game = CreateClassicGame.createClassicGame(pedro, facundo);
+//        Game game = ChessGameConstructor.createClassicGame(pedro, facundo);
 //
 //        game.move(game.getLastMove().getPosition(1, 4), game.getLastMove().getPosition(3, 4));
 //        game.move(game.getLastMove().getPosition(6, 4), game.getLastMove().getPosition(4, 4));

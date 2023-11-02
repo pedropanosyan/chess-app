@@ -14,9 +14,7 @@ public class GameVersion {
     private final List<WinningValidator> winningConditions;
     private final int boardSize;
 
-    public  GameVersion(Map<PieceType, Move> move,
-                        List<WinningValidator> winningConditions,
-                        int boardSize) {
+    public  GameVersion(Map<PieceType, Move> move, List<WinningValidator> winningConditions, int boardSize) {
         this.move = move;
         this.winningConditions = winningConditions;
         this.boardSize = boardSize;

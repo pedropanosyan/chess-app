@@ -4,7 +4,7 @@
 //import classes.basicMovements.PawnValidator;
 //import classes.enums.Colour;
 //import classes.enums.PieceType;
-//import classes.gameInterface.CreateClassicGame;
+//import classes.gameInterface.ChessGameConstructor;
 //import common.Game;
 //import org.junit.Test;
 //
@@ -14,7 +14,7 @@
 //
 //    Player[] players = new Player[]{new Player("Pedro", Colour.WHITE, true), new Player("Facundo", Colour.BLACK, false)};
 //
-//    Game game = CreateClassicGame.createClassicGame(players[0], players[1]);
+//    Game game = ChessGameConstructor.createClassicGame(players[0], players[1]);
 //
 //    @Test
 //    public void testValidSingleMove() {

@@ -8,6 +8,7 @@ import common.enums.PieceType;
 import common.move.Move;
 import common.movementValidator.MovementValidator;
 import common.exceptions.InvalidMoveException;
+import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,8 @@ public class PawnMove implements Move {
         boolean pieceInTheMiddle = pieceInTheMiddle(board, from, to);
 
         if (isCoronation(board, to)) return coronationMovement(newBoard, from, to, pieceInTheMiddle);
-        if (!pieceInTheMiddle && colDiff == 1) return normalMovement(newBoard, from, to, false);
+        if (colDiff == 1) return normalMovement(newBoard, from, to, pieceInTheMiddle);
+        if (!pieceInTheMiddle && colDiff == 2) return normalMovement(newBoard, from, to, false);
 
         Board afterMovingBoard = normalMovement(newBoard, from, to, true);
         List<Position> possiblePositions = fetchPossiblePositions(afterMovingBoard, to);
@@ -38,6 +40,7 @@ public class PawnMove implements Move {
         return this.move(afterMovingBoard, to, possiblePositions.get(0));
     }
 
+    @Override
     public List<MovementValidator> getMovementValidators() {
         return this.movementValidators;
     }
@@ -71,10 +74,12 @@ public class PawnMove implements Move {
     }
 
     private Board normalMovement(Board board, Position from, Position to, boolean pieceInTheMiddle) {
-        deleteMiddlePiece(board, from, to, pieceInTheMiddle);
-        board.getPosition(from.getRow(), from.getCol()).setPiece(null);
-        board.getPosition(to.getRow(), to.getCol()).setPiece(from.getPiece());
-        return board;
+        Board copyBoard = board.copyBoard();
+        Piece piece = copyBoard.getPiece(from);
+        deleteMiddlePiece(copyBoard, from, to, pieceInTheMiddle);
+        copyBoard.getPosition(from).setPiece(null);
+        copyBoard.getPosition(to).setPiece(piece);
+        return copyBoard;
     }
 
     private void deleteMiddlePiece(Board board, Position from, Position to, boolean pieceInTheMiddle) {
@@ -88,9 +93,17 @@ public class PawnMove implements Move {
     private List<Position> fetchPossiblePositions(Board board, Position from) {
         List<Position> possiblePositions = new ArrayList<>();
         for (MovementValidator validator : movementValidators) {
-            possiblePositions.addAll(validator.getPossiblePositions(board, from));
+            for (Position position : board.getAllPositions()) {
+                if (validator.validateMove(board, from, position)) {
+                    if (colDiffEqual2(from, position) && pieceInTheMiddle(board, from, position)) possiblePositions.add(position);
+                }
+            }
         }
         return possiblePositions;
+    }
+
+    private static boolean colDiffEqual2(Position from, Position position) {
+        return Math.abs(from.getCol() - position.getCol()) == 2;
     }
 
 

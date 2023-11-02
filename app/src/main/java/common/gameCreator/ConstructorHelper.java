@@ -1,4 +1,4 @@
-package common;
+package common.gameCreator;
 
 import common.Board;
 import common.GameVersion;
@@ -13,17 +13,17 @@ import java.util.Map;
 
 public class ConstructorHelper {
 
-    public static Position[][] initializeBoard(GameVersion gameVersion) {
+    public static Board initializeBoard(GameVersion gameVersion) {
         int size = gameVersion.getBoardSize();
 
         Position[][] board = new Position[size][size];
         for (int row = 0; row < size; row++) {
-            for (int col = 0; col < 8; col++) {
+            for (int col = 0; col < size; col++) {
                 board[row][col] = new Position(row, col);
             }
         }
         initializeChessPieces(board);
-        return board;
+        return new Board(board);
     }
 
     private static void initializeChessPieces(Position[][] board) {

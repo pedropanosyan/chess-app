@@ -33,11 +33,7 @@ public class GameCreator {
         ), List.of(noPlaceToMove, noPiecesRemaining) , size);
         Board board = CheckersBoardConstructor.initializeBoard(size);
 
-        Player player1 = new Player("Player1", Colour.WHITE);
-        Player player2 = new Player("Player2", Colour.BLACK);
-        Player[] players = new Player[]{player1, player2};
-
-        return new Game(gameVersion, board, players);
+        return new Game(gameVersion, board);
     }
 
 }

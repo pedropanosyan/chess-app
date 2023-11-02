@@ -16,7 +16,7 @@ public class NoPiecesRemaining implements WinningValidator {
         for (int row = 0; row < board.getLength(); row++) {
             for (int col = 0; col < board.getLength(); col++) {
                 Position position = board.getPosition(row, col);
-                if (position.hasPiece() && isOppositeColour(colour, position)) {
+                if (position.hasPiece() && isSameColour(colour, position)) {
                     return false;
                 }
             }
@@ -24,8 +24,8 @@ public class NoPiecesRemaining implements WinningValidator {
         return true;
     }
 
-    private boolean isOppositeColour(Colour colour, Position position) {
-        return position.getPiece().getColour() != colour;
+    private boolean isSameColour(Colour colour, Position position) {
+        return position.getPiece().getColour() == colour;
     }
 
 

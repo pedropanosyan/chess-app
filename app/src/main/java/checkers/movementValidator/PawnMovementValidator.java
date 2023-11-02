@@ -13,7 +13,7 @@ public class PawnMovementValidator implements MovementValidator {
 
     @Override
     public boolean validateMove(Board board, Position from, Position to) {
-        if (outOfIndex(board.getLength()-1, from, to)) { return false; }
+        if (outOfIndex(board.getLength()-1, from, to)) return false;
 
         Piece fromPiece = board.getPiece(from.getRow(), from.getCol());
         Piece toPiece = board.getPiece(to.getRow(), to.getCol());
@@ -25,8 +25,10 @@ public class PawnMovementValidator implements MovementValidator {
         int colDiff = Math.abs(to.getCol() - from.getCol());
 
         if (!isDiagonal(rowDiff, colDiff)) { return false; }
-        if (isDoubleDiagonal(rowDiff, colDiff)) { return pieceInTheMiddle(board, from, to); }
-        if (!isMovingForward(from, to)) { return false; }
+        if (isDoubleDiagonal(rowDiff, colDiff) && isMovingForward(from, to, fromPiece.getColour())) {
+            return pieceInTheMiddle(board, from, to);
+        }
+        if (!isMovingForward(from, to, fromPiece.getColour())) { return false; }
 
         return true;
     }
@@ -48,9 +50,8 @@ public class PawnMovementValidator implements MovementValidator {
         return rowDiff == 2 && colDiff == 2;
     }
 
-    private boolean isMovingForward(Position from, Position to) {
-        Colour pieceColor = from.getPiece().getColour();
-        if (pieceColor == Colour.WHITE) {
+    private boolean isMovingForward(Position from, Position to, Colour colour) {
+        if (colour == Colour.WHITE) {
             return to.getRow() >= from.getRow();
         } else {
             return to.getRow() <= from.getRow();
@@ -71,21 +72,5 @@ public class PawnMovementValidator implements MovementValidator {
         return middlePosition.hasPiece() && arePiecesFromDifferentColour(fromPiece, middlePiece);
     }
 
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        List<Position> possiblePositions = new ArrayList<>();
-        Piece piece = board.getPiece(from.getRow(), from.getCol());
-        if (piece == null) return possiblePositions;
-        if (piece.getColour() == Colour.WHITE) {
-            possiblePositions.add(new Position(from.getRow() + 2, from.getCol() + 2));
-            possiblePositions.add(new Position(from.getRow() + 2, from.getCol() - 2));
-        } else {
-            possiblePositions.add(new Position(from.getRow() - 2, from.getCol() + 2));
-            possiblePositions.add(new Position(from.getRow() - 2, from.getCol() - 2));
-        }
-
-        possiblePositions.removeIf(position -> !validateMove(board, from, position));
-        return possiblePositions;
-    }
 
 }

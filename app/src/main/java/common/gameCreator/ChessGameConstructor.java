@@ -1,23 +1,18 @@
-package chess.gameInterface;
+package common.gameCreator;
 
-import chess.rules.UnderCheck;
-import common.ConstructorHelper;
 import chess.basicMovements.*;
-
 import chess.move.BasicMove;
 import chess.winningValidator.CheckMateValidator;
-import common.Board;
-import common.GameVersion;
-import common.Player;
+import common.*;
+import common.enums.Colour;
 import common.enums.PieceType;
-import common.Game;
 
 import java.util.List;
 import java.util.Map;
 
-public class CreateClassicGame {
+public class ChessGameConstructor implements GameCreatorInterface{
 
-    public static Game createClassicGame(Player p1, Player p2) {
+    public static Game createClassicGame(Player p1, Player p2, int size) {
         DiagonalValidator diagonalValidator = new DiagonalValidator(false);
         DiagonalValidator diagonalKingValidator = new DiagonalValidator(false, 1);
         HorizontalValidator horizontalValidator = new HorizontalValidator(false);
@@ -46,8 +41,50 @@ public class CreateClassicGame {
                 PieceType.BISHOP, bishopMove,
                 PieceType.QUEEN, queenMove,
                 PieceType.KING, kingMove
-        ), List.of(new UnderCheck(), new CheckMateValidator()), 8);
+        ), List.of(new CheckMateValidator()), size);
 
-        return new Game(gameVersion, new Board(ConstructorHelper.initializeBoard(gameVersion)), new Player[]{p1, p2});
+        Board board = initializeBoard(gameVersion);
+
+        return new Game(gameVersion, board);
+    }
+
+    public static Board initializeBoard(GameVersion gameVersion) {
+        int size = gameVersion.getBoardSize();
+
+        Position[][] board = new Position[size][size];
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                board[row][col] = new Position(row, col);
+            }
+        }
+        initializeChessPieces(board);
+        return new Board(board);
+    }
+
+    private static void initializeChessPieces(Position[][] board) {
+        PieceType[] initialRow = {
+                PieceType.ROOK,
+                PieceType.KNIGHT,
+                PieceType.BISHOP,
+                PieceType.QUEEN,
+                PieceType.KING,
+                PieceType.BISHOP,
+                PieceType.KNIGHT,
+                PieceType.ROOK,
+        };
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Colour pieceColour = (row < 2) ? Colour.WHITE : Colour.BLACK;
+                if (row == 1 || row == 6) {
+                    if (pieceColour == Colour.WHITE) {
+                        board[row][col].setPiece(new Piece(PieceType.WHITE_PAWN, pieceColour));
+                    } else {
+                        board[row][col].setPiece(new Piece(PieceType.BLACK_PAWN, pieceColour));
+                    }
+                } else if (row == 0 || row == 7) {
+                    board[row][col].setPiece(new Piece(initialRow[col], pieceColour));
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package chess.rules;
+package chess.winningValidator;
 
 import common.Board;
 import common.Position;
@@ -13,7 +13,7 @@ public class UnderCheck implements WinningValidator {
 
     @Override
     public boolean validated(Map<PieceType, Move> moveMap, Board board, Colour colour) {
-        Position kingPosition = board.searchPiecePosition(PieceType.KING, colour);
+        Position kingPosition = board.findPiece(PieceType.KING, colour);
         return board.isPieceUnderAttack(moveMap, kingPosition, colour);
     }
 }

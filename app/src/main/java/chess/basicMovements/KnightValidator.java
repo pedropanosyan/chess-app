@@ -19,35 +19,4 @@ public class KnightValidator implements MovementValidator {
         return isValid;
     }
 
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        List<Position> validMoves = new ArrayList<>();
-
-        int fromRow = from.getRow();
-        int fromCol = from.getCol();
-
-        int[][] knightMoves = {
-                {-2, -1}, {-2, 1},
-                {-1, -2}, {-1, 2},
-                {1, -2}, {1, 2},
-                {2, -1}, {2, 1}
-        };
-
-        for (int[] move : knightMoves) {
-            int newRow = fromRow + move[0];
-            int newCol = fromCol + move[1];
-
-            if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-                Position newPosition = new Position(newRow, newCol);
-
-                if (validateMove(board, from, newPosition)) {
-                    validMoves.add(newPosition);
-                }
-            }
-        }
-
-        return validMoves;
-    }
-
-
 }

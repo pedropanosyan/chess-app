@@ -1,7 +1,5 @@
 package common;
-
-import common.Piece;
-import common.Position;
+import com.sun.pisces.PiscesRenderer;
 import common.enums.Colour;
 import common.enums.PieceType;
 import common.move.Move;
@@ -22,6 +20,10 @@ public class Board {
         return board[row][col].getPiece();
     }
 
+    public Piece getPiece(Position position) {
+        return board[position.getRow()][position.getCol()].getPiece();
+    }
+
     public Position getPosition(int row, int col) {
         return board[row][col];
     }
@@ -30,16 +32,26 @@ public class Board {
         return board[position.getRow()][position.getCol()];
     }
 
-    public boolean isPieceUnderAttack(Map<PieceType, Move> moveMap, Position kingPosition, Colour colour) {
-        for (Position[] positions : board) {
-            for (Position position : positions) {
-                Piece piece = position.getPiece();
-                if (piece != null && piece.getColour() != colour) {
-                    List<MovementValidator> movements = moveMap.get(piece.getType()).getMovementValidators();
-                    for (MovementValidator movement : movements) {
-                        if (movement.validateMove(this, position, kingPosition)) {
-                            return true;
-                        }
+    public Position[] getAllPositions() {
+        int size = board.length;
+        Position[] positions = new Position[size*size];
+        int index = 0;
+        for (Position[] row : board) {
+            for (Position position : row) {
+                positions[index++] = position;
+            }
+        }
+        return positions;
+    }
+
+    public boolean isPieceUnderAttack(Map<PieceType, Move> moveMap, Position pieceToAnalyze, Colour colour) {
+        for (Position position : this.getAllPositions()) {
+            Piece piece = position.getPiece();
+            if (piece != null && piece.getColour() != colour) {
+                List<MovementValidator> movements = moveMap.get(piece.getType()).getMovementValidators();
+                for (MovementValidator movement : movements) {
+                    if (movement.validateMove(this, position, pieceToAnalyze)) {
+                        return true;
                     }
                 }
             }
@@ -47,22 +59,12 @@ public class Board {
         return false;
     }
 
-    public Position searchPiecePosition(Piece piece) {
-        for (Position[] positions : board) {
-            for (Position position : positions) {
-                if (position.hasPiece() && position.getPiece().equals(piece)) {
-                    return position;
-                }
-            }
-        }
-        return null;
-    }
 
     public int getLength() {
         return this.board[0].length;
     }
 
-    public Position searchPiecePosition(PieceType pieceType, Colour colour) {
+    public Position findPiece(PieceType pieceType, Colour colour) {
         for (Position[] positions : board) {
             for (Position position : positions) {
                 Piece piece = position.getPiece();

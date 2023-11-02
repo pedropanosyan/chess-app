@@ -20,18 +20,19 @@ public class KingMove implements Move {
 
     @Override
     public Board move(Board board, Position from, Position to) throws InvalidMoveException {
-
         if (!validateMovement(board, from, to)) throw new InvalidMoveException("Invalid move");
 
         Board newBoard = board.copyBoard();
-
         Board afterMovingBoard = kingMovement(newBoard, board.getPosition(from), to);
+
         if (!otherColourPieceInTheMiddle(board, board.getPosition(from), to)) return afterMovingBoard;
+
         List<Position> possiblePositions = fetchPossiblePositions(afterMovingBoard, to);
         if (possiblePositions.isEmpty()) return afterMovingBoard;
         return this.move(afterMovingBoard, board.getPosition(to), board.getPosition(possiblePositions.get(0)));
     }
 
+    @Override
     public List<MovementValidator> getMovementValidators() {
         return this.movementValidators;
     }
@@ -83,9 +84,25 @@ public class KingMove implements Move {
     private List<Position> fetchPossiblePositions(Board board, Position from) {
         List<Position> possiblePositions = new ArrayList<>();
         for (MovementValidator validator : movementValidators) {
-            possiblePositions.addAll(validator.getPossiblePositions(board, from));
+            for (Position position : board.getAllPositions()) {
+                if (validator.validateMove(board, from, position)) {
+                    if (colDiffEqual2(from, position) && pieceInTheMiddle(board, from, position))
+                        possiblePositions.add(position);
+                }
+            }
         }
         return possiblePositions;
+    }
+
+    private static boolean colDiffEqual2(Position from, Position position) {
+        return Math.abs(from.getCol() - position.getCol()) == 2;
+    }
+
+    private boolean pieceInTheMiddle(Board board, Position from, Position to) {
+        int middleRow = (from.getRow() + to.getRow()) / 2;
+        int middleCol = (from.getCol() + to.getCol()) / 2;
+        Position middlePosition = board.getPosition(middleRow, middleCol);
+        return middlePosition.hasPiece();
     }
 
 }

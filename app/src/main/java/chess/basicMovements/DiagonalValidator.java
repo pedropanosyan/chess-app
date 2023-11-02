@@ -49,38 +49,6 @@ public class DiagonalValidator implements MovementValidator {
         return counter <= this.maxSteps;
     }
 
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        List<Position> possibleMoves = new ArrayList<>();
-
-        int fromRow = from.getRow();
-        int fromCol = from.getCol();
-
-        int[] rowOffsets = { -1, -1, 1, 1 };
-        int[] colOffsets = { -1, 1, -1, 1 };
-
-        for (int i = 0; i < 4; i++) {
-            for (int step = 1; step <= this.maxSteps; step++) {
-                int newRow = fromRow + rowOffsets[i] * step;
-                int newCol = fromCol + colOffsets[i] * step;
-
-                if (isValidPosition(newRow, newCol)) {
-                    Position newPosition = board.getPosition(newRow, newCol);
-
-                    if (!newPosition.hasPiece() || newPosition.getPiece().getColour() != from.getPiece().getColour()) {
-                        possibleMoves.add(newPosition);
-                    }
-                    if (newPosition.hasPiece()) {
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-        }
-        return possibleMoves;
-    }
-
     private boolean isValidPosition(int row, int col) {
         return row >= 0 && row < 8 && col >= 0 && col < 8;
     }

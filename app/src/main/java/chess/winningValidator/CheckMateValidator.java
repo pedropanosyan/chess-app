@@ -18,46 +18,58 @@ public class CheckMateValidator implements WinningValidator {
 
     @Override
     public boolean validated(Map<PieceType, Move> moveMap, Board board, Colour colour) {
-        Position kingPosition = board.searchPiecePosition(PieceType.KING, colour);
+        Position kingPosition = board.findPiece(PieceType.KING, colour);
         if (!isBeingChecked(moveMap, kingPosition, board, colour)) return false;
-        try {
-            return stillUnderCheck(moveMap, kingPosition, board, colour) && !canMove(moveMap, kingPosition, board, colour);
-        }
-        catch (InvalidMoveException e) {
-            return false;
-        }
+        return underCheck(moveMap, board, colour) && !canMove(moveMap, kingPosition, board, colour);
     }
 
     private boolean isBeingChecked(Map<PieceType, Move> moveMap, Position king, Board board, Colour colour) {
         return board.isPieceUnderAttack(moveMap, king, colour);
     }
 
-    private boolean stillUnderCheck(Map<PieceType, Move> moveMap, Position king, Board board, Colour colour) throws InvalidMoveException {
+    private boolean underCheck(Map<PieceType, Move> moveMap, Board board, Colour colour) {
         Board copyBoard = board.copyBoard();
-        for (Position[] positions : copyBoard.getBoard()) {
-            for (Position position : positions) {
-                if (position.hasPiece() && position.getPiece().getColour() == colour) {
-                    PieceType pieceType = position.getPiece().getType();
-                    List<MovementValidator> movements = moveMap.get(pieceType).getMovementValidators();
-                    for (MovementValidator movement : movements) {
-                        List<Position> validPositions = movement.getPossiblePositions(board, position);
-                        for (Position validPosition : validPositions) {
-                            if (movement.validateMove(board, position, validPosition)) {
-                                Board tempBoard = moveMap.get(pieceType).move(board, position, validPosition);
-                                Position newKing = tempBoard.searchPiecePosition(PieceType.KING, colour);
-                                if (newKing == null) continue;
-                                System.out.println(newKing);
-                                if (!isBeingChecked(moveMap, newKing, tempBoard, colour)) {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        for (Position position : copyBoard.getAllPositions()) {
+            if (!sameColourPiece(colour, position)) continue;
+            PieceType pieceType = position.getPiece().getType();
+            if (escapesCheck(moveMap, board, colour, position, copyBoard, pieceType)) return false;
         }
         return true;
     }
+
+    private boolean escapesCheck(Map<PieceType, Move> moveMap, Board board, Colour colour, Position position, Board copyBoard, PieceType pieceType) {
+        for (Position targetPosition : copyBoard.getAllPositions()) {
+            if (samePosition(position, targetPosition)) continue;
+            try {
+                Board tempBoard = moveMap.get(pieceType).move(board, position, targetPosition);
+                Position newKing = tempBoard.findPiece(PieceType.KING, colour);
+                if (!isBeingChecked(moveMap, newKing, tempBoard, colour)) {
+                    return true;
+                }
+            } catch (InvalidMoveException e) {
+                continue;
+            }
+        }
+        return false;
+    }
+
+    private static boolean samePosition(Position position, Position targetPosition) {
+        return position == targetPosition;
+    }
+
+    private static boolean sameColourPiece(Colour colour, Position position) {
+        return position.hasPiece() && position.getPiece().getColour() == colour;
+    }
+
+    private boolean canPieceMoveToPosition(List<MovementValidator> movementValidators, Position from, Position to, Board board) {
+        for (MovementValidator movement : movementValidators) {
+            if (movement.validateMove(board, from, to)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private boolean canMove(Map<PieceType, Move> moveMap, Position king, Board board, Colour colour) {
         Position[] positions = getAdjacentPositions(board, king);

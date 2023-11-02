@@ -8,6 +8,5 @@ import java.util.List;
 public interface MovementValidator {
 
     boolean validateMove(Board board, Position from, Position to);
-    List<Position> getPossiblePositions(Board board, Position from);
 
 }

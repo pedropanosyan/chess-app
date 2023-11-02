@@ -54,11 +54,6 @@ public class PawnValidator implements MovementValidator {
         return false;
     }
 
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        return new ArrayList<>();
-    }
-
     private boolean isCoronation(Position to) {
         return (to.getRow() == 0 && this.backward > 0) || (to.getRow() == 7 && this.forward > 0);
     }

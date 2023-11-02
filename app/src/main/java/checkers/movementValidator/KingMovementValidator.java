@@ -31,29 +31,6 @@ public class KingMovementValidator implements MovementValidator {
         return true;
     }
 
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        List<Position> possiblePositions = new ArrayList<>();
-
-        int fromRow = from.getRow();
-        int fromCol = from.getCol();
-
-        int[] rowOffsets = { -1, -1, 1, 1 };
-        int[] colOffsets = { -1, 1, -1, 1 };
-
-        for (int i = 0; i < 4; i++) {
-            for (int step = 1; step <= board.getLength(); step++) {
-                int newRow = fromRow + rowOffsets[i] * step;
-                int newCol = fromCol + colOffsets[i] * step;
-                if (!isValidPosition(newRow, newCol, board.getLength())) break;
-                possiblePositions.add(new Position(newRow, newCol));
-            }
-        }
-        possiblePositions.removeIf(position -> !validateMove(board, from, position));
-        possiblePositions.removeIf(position -> !otherColourPieceInTheMiddle(board, board.getPosition(from), board.getPosition(position)));
-        return possiblePositions;
-    }
-
     private boolean isValidPosition(int row, int col, int size) {
         return row >= 0 && row < size && col >= 0 && col < size;
     }

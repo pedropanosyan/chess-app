@@ -16,15 +16,14 @@ public class CastlingValidator implements MovementValidator {
     public boolean validateMove(Board board, Position from, Position to) {
         int rowDiff = Math.abs(to.getRow() - from.getRow());
         int colDiff = Math.abs(to.getCol() - from.getCol());
+
         Piece king = from.getPiece();
         Piece rook = getRook(board, colDiff, king.getColour());
-        return kingNotMoved(king) && rookNotMoved(rook) &&
-                isCastling(king, colDiff, rowDiff) && !areObstacles(board, from, to);
-    }
 
-    @Override
-    public List<Position> getPossiblePositions(Board board, Position from) {
-        return new ArrayList<>();
+        if (!(isRightPiece(king, PieceType.KING) && isRightPiece(rook, PieceType.ROOK))) return false;
+
+        return pieceNotMoved(king) && pieceNotMoved(rook) &&
+                isCastling(king, colDiff, rowDiff) && !areObstacles(board, from, to);
     }
 
     private Piece getRook(Board board, int colDiff, Colour colour) {
@@ -48,16 +47,16 @@ public class CastlingValidator implements MovementValidator {
         return null;
     }
 
+    private boolean isRightPiece(Piece piece, PieceType expected) {
+        return piece != null && piece.getType() == expected;
+    }
+
     private static boolean isCastling(Piece piece, int colDiff, int rowDiff) {
         return piece.getType() == PieceType.KING && (colDiff == 2 || colDiff == 3) && rowDiff == 0;
     }
 
-    private static boolean kingNotMoved(Piece king) {
-        return king != null && king.getType() == PieceType.KING && !king.hasMoved();
-    }
-
-    private static boolean rookNotMoved(Piece rook) {
-        return rook != null && rook.getType() == PieceType.ROOK && !rook.hasMoved();
+    private static boolean pieceNotMoved(Piece piece) {
+        return !piece.hasMoved();
     }
 
     public boolean areObstacles(Board board, Position from, Position to){
@@ -65,16 +64,12 @@ public class CastlingValidator implements MovementValidator {
         int maxCol = Math.max(from.getCol(), to.getCol());
 
         for (int col = minCol + 1; col < maxCol; col++) {
-            Position actualPosition = new Position(from.getRow(), col);
             Piece pieceInBetween = board.getPiece(from.getRow(), col);
-            if (pieceInBetween != null) {
-                if (actualPosition.isEqual(to) && to.hasPiece()) {
-                    return from.getPiece().getColour() != to.getPiece().getColour();
-                } else return false;
-            }
+            if (pieceInBetween != null) return true;
         }
         return false;
     }
+
 
 
 
