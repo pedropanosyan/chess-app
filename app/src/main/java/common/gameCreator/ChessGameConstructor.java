@@ -15,13 +15,18 @@ public class ChessGameConstructor implements GameCreatorInterface{
     public static Game createClassicGame(int size) {
         DiagonalValidator diagonalValidator = new DiagonalValidator(false);
         DiagonalValidator diagonalKingValidator = new DiagonalValidator(false, 1);
+
         HorizontalValidator horizontalValidator = new HorizontalValidator(false);
         HorizontalValidator horizontalKingValidator = new HorizontalValidator(false, 1);
+
         VerticalValidator verticalValidator = new VerticalValidator(false);
         VerticalValidator verticalKingValidator = new VerticalValidator(false, 1);
+
         KnightValidator knightValidator = new KnightValidator();
+
         PawnValidator whitePawnValidator = new PawnValidator(false, 1, 0);
         PawnValidator blackPawnValidator = new PawnValidator(false, 0, 1);
+
         CastlingValidator castlingValidator = new CastlingValidator();
         CoronationValidator coronationValidator = new CoronationValidator();
 
@@ -34,13 +39,13 @@ public class ChessGameConstructor implements GameCreatorInterface{
         BasicMove kingMove = new BasicMove(List.of(horizontalKingValidator, verticalKingValidator, diagonalKingValidator, castlingValidator));
 
         GameVersion gameVersion = new GameVersion(Map.of(
-                PieceType.WHITE_PAWN, whitePawnMove,
-                PieceType.BLACK_PAWN, blackPawnMove,
-                PieceType.ROOK, rookMove,
-                PieceType.KNIGHT, knightMove,
-                PieceType.BISHOP, bishopMove,
-                PieceType.QUEEN, queenMove,
-                PieceType.KING, kingMove
+            PieceType.WHITE_PAWN, whitePawnMove,
+            PieceType.BLACK_PAWN, blackPawnMove,
+            PieceType.ROOK, rookMove,
+            PieceType.KNIGHT, knightMove,
+            PieceType.BISHOP, bishopMove,
+            PieceType.QUEEN, queenMove,
+            PieceType.KING, kingMove
         ), List.of(new CheckMateValidator()), size);
 
         Board board = initializeBoard(gameVersion);
