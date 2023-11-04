@@ -19,11 +19,11 @@ public class BasicMove implements Move {
 
     @Override
     public Board move(Board board, Position from, Position to) throws InvalidMoveException {
-        Piece piece = board.getPiece(from.getRow(), from.getCol());
+        Piece piece = board.getPiece(from);
         if (!validateMovement(board, from, to)) throw new InvalidMoveException("Invalid move");
 
         Board newBoard = board.copyBoard();
-        newBoard.getBoard()[from.getRow()][from.getCol()].setPiece(null);
+        newBoard.removePiece(from);
         newBoard.getBoard()[to.getRow()][to.getCol()].setPiece(piece);
         return newBoard;
     }

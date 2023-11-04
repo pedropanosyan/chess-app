@@ -16,12 +16,20 @@ public class Game {
         this.board  = board;
     }
 
-    public Game move(Position from, Position to) throws InvalidMoveException, EndGameException {
+    private Game move(Position from, Position to) throws InvalidMoveException, EndGameException {
         if (!from.hasPiece()) throw new InvalidMoveException("Trying to move from an empty position");
         Piece piece = from.getPiece();
         Board newBoard = validateAndMove(piece, from, to);
         if (gameHasFinished(newBoard, piece.getColour())) throw new EndGameException();
         return new Game(this.version, newBoard);
+    }
+
+    public Game move(Coordinates from, Coordinates to) throws InvalidMoveException, EndGameException {
+        return move(readPosition(from), readPosition(to));
+    }
+
+    public Position readPosition(Coordinates coordinates) {
+        return this.board.getPosition(coordinates.row, coordinates.col);
     }
 
     private Board validateAndMove(Piece piece, Position from, Position to) throws InvalidMoveException {

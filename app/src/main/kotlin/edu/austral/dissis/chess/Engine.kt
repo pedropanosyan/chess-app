@@ -1,6 +1,7 @@
 package edu.austral.dissis.chess;
 
 import common.Adapter
+import common.Coordinates
 import common.enums.Colour
 import common.exceptions.EndGameException
 import common.exceptions.InvalidMoveException
@@ -14,18 +15,17 @@ class Engine: GameEngine {
     private var currentPlayer = Colour.WHITE
 
 
-    override fun applyMove(move: Move): MoveResult {
-        val fromPos = Adapter.fromHisToMinePosition(move.from)
-        val realFromPos = myGame.board.getPosition(fromPos.row, fromPos.col)
-        val fromPiece = myGame.board.getPiece(fromPos.row, fromPos.col)
-        val toPos = Adapter.fromHisToMinePosition(move.to)
-        val realToPos = myGame.board.getPosition(toPos.row, toPos.col)
+    fun adaptPosition(position: Position) : Coordinates {
+        return Coordinates(position.row, position.column)
+    }
 
-        if (fromPiece == null) return InvalidMove("No piece in from position")
+    override fun applyMove(move: Move): MoveResult {
+        val fromPos = adaptPosition(move.from)
+        val toPos = adaptPosition(move.to)
 
         try {
-            if (fromPiece.colour != currentPlayer) return InvalidMove("Piece does not belong to current player")
-            val newGame = myGame.move(realFromPos, realToPos)
+//            if (fromPiece.colour != currentPlayer) return InvalidMove("Piece does not belong to current player")
+            val newGame = myGame.move(fromPos, toPos)
             myGame = newGame
             currentPlayer = if (currentPlayer == Colour.WHITE) Colour.BLACK else Colour.WHITE
             return NewGameState(Adapter.getPieces(newGame.board), Adapter.adaptColour(currentPlayer))

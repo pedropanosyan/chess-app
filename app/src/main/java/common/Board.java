@@ -79,6 +79,12 @@ public class Board {
         return board;
     }
 
+    public Board removePiece(Position position) {
+        Board copy = this.copyBoard();
+        copy.getPosition(position).setPiece(null);
+        return copy;
+    }
+
     public Board copyBoard() {
         int numRows = board.length;
         int numCols = board[0].length;
