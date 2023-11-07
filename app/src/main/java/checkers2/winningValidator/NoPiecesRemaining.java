@@ -13,9 +13,13 @@ public class NoPiecesRemaining implements WinningValidator {
     @Override
     public boolean validated(Board board, Colour colour) {
         for (Piece piece : board.getBoard().values()) {
-            if (isSameColour(colour, piece)) return false;
+            if (isSameColour(getOppositeColour(colour), piece)) return false;
         }
         return true;
+    }
+
+    private Colour getOppositeColour(Colour colour) {
+        return colour == Colour.WHITE ? Colour.BLACK : Colour.WHITE;
     }
 
     private boolean isSameColour(Colour colour, Piece piece) {

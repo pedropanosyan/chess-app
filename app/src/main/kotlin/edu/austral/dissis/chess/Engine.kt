@@ -13,7 +13,7 @@ import edu.austral.dissis.chess.gui.*
 class Engine: GameEngine {
 
     private var classicGame = GameFactory();
-    private var myGame = classicGame.createClassicChessGame();
+    private var myGame = classicGame.createClassicCheckersGame();
     private var currentPlayer = Colour.WHITE
 
     override fun applyMove(move: Move): MoveResult {

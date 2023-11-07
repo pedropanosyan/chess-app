@@ -38,7 +38,8 @@ public class Board {
         int index = 0;
         for (Position[] row : board) {
             for (Position position : row) {
-                positions[index++] = position;
+                positions[index] = position;
+
             }
         }
         return positions;

@@ -4,7 +4,9 @@ import common2.enums.Colour;
 import common2.enums.PieceType;
 import common2.pieceInBetween.PieceInBetweenStrategy;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Board {
@@ -74,8 +76,32 @@ public class Board {
 
     public boolean hasValidMovements(Piece piece) {
         Position position = findPositionById(piece.getId());
-        return board.keySet().stream()
+        Position[] allPositions = getAllPositions();
+        return Arrays.stream(allPositions)
                 .anyMatch(to -> piece.isValid(this, position, to));
+    }
+
+    public List<Position> getValidMovements(Piece piece) {
+        Position position = findPositionById(piece.getId());
+        Position[] allPositions = getAllPositions();
+        return Arrays.stream(allPositions)
+                .filter(to -> piece.isValid(this, position, to))
+                .toList();
+    }
+
+    private Position[] getAllPositions() {
+        Position[] positions = new Position[size*size];
+        int total = 0;
+        int row = 0;
+        while (row < size) {
+            int col = 0;
+            while (col < size) {
+                positions[total++] = new Position(row, col);
+                col++;
+            }
+            row++;
+        }
+        return positions;
     }
 
     public Board removePiece(Position position) {

@@ -60,5 +60,24 @@ public class BoardFactory {
         return new Board(map, 8);
     }
 
+    public static Board createOnePieceCheckerBoard(GameVersion gameVersion) {
+        PieceFactory pieceFactory = new PieceFactory(gameVersion);
+        int i = 0;
+        Map<Position, Piece> map = new HashMap<>();
+        for (int row = 0; row < 3; row++) {
+            for (int col = (row % 2 == 0 ) ? 1 : 0; col < 8; col += 2) {
+                if (i == 1) break;
+                map.put(new Position(row, col), pieceFactory.createCheckerPawn(Colour.WHITE));
+                i++;
+            }
+            if (i == 1) break;
+        }
+        for (int row = 5; row < 8; row++) {
+            for (int col = (row % 2 == 0) ? 1 : 0; col < 8; col += 2) {
+                map.put(new Position(row, col), pieceFactory.createCheckerPawn(Colour.BLACK));
+            }
+        }
+        return new Board(map, 8);
+    }
 
 }

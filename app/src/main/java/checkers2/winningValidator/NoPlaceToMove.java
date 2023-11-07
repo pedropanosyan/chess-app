@@ -17,13 +17,16 @@ public class NoPlaceToMove implements WinningValidator {
     public boolean validated(Board board, Colour colour) {
         Map<Position, Piece> boardMap = board.getBoard();
         for (Piece piece : boardMap.values()) {
-            if (!isSameColour(colour, piece)) continue;
-            if (board.hasValidMovements(piece)) return false;
+            if (!isSameColour(colour, piece)) {
+                if (board.hasValidMovements(piece)) return false;
+            } ;
         }
-        return false;
+        return true;
     }
 
     private boolean isSameColour(Colour colour, Piece piece) {
         return piece.getColour() == colour;
     }
+
+
 }

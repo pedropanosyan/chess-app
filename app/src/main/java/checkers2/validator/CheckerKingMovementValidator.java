@@ -1,5 +1,6 @@
 package checkers2.validator;
 
+import checkers2.move.CheckersMove;
 import common2.Board;
 import common2.Move.BasicMove;
 import common2.Position;
@@ -10,7 +11,7 @@ import common2.validator.MovementValidator;
 public class CheckerKingMovementValidator implements MovementValidator {
 
     private final ValidatorResult falseValidatorResult = new ValidatorResult(false, null);
-    private final ValidatorResult trueValidatorResult = new ValidatorResult(true, new BasicMove());
+    private final ValidatorResult trueValidatorResult = new ValidatorResult(true, new CheckersMove());
 
     @Override
     public ValidatorResult validateMove(Board board, Position from, Position to) {

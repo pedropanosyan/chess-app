@@ -6,6 +6,7 @@ import common2.Move.Coronation;
 import common2.Move.Move;
 import common2.Piece;
 import common2.Position;
+import common2.enums.Colour;
 import common2.enums.PieceType;
 import common2.pieceInBetween.CheckersInBetweenStrategy;
 import common2.validator.MovementValidator;
@@ -25,9 +26,11 @@ public class CheckersMove implements Move {
         int colDiff = Math.abs(to.getCol() - from.getCol());
         boolean pieceInTheMiddle = board.pieceInBetween(from, to, new CheckersInBetweenStrategy());
 
-        if (isCoronation(board.getSize(), to)) return coronation.move(board, from, to);
+        if (isCoronation(board.getSize(), to)) return coronate(board, from, to);
         if (colDiff == 1) return basicMove.move(board, from, to);
-        if (!pieceInTheMiddle && colDiff == 2) return basicMove.move(board, from, to);
+        if (!pieceInTheMiddle && colDiff == 2) {
+            if (middlePieceColor(board, from, to) == null) return deleteAndMove(board, from, to);
+        }
 
         Board afterMovingBoard = deleteAndMove(board, from, to);
         List<Position> possiblePositions = fetchPossiblePositions(afterMovingBoard, to);
@@ -59,10 +62,19 @@ public class CheckersMove implements Move {
     }
 
     private List<Position> fetchPossiblePositions(Board board, Position from) {
-        Piece piece = board.getPiece(from);
-        return board.getBoard().keySet().stream()
-                .filter(position -> piece.isValid(board, from, position))
-                .collect(Collectors.toList());
+        return board.getValidMovements(board.getPiece(from));
     }
 
+    private Board coronate(Board board, Position from, Position to) {
+        int middleRow = (from.getRow() + to.getRow()) / 2;
+        int middleCol = (from.getCol() + to.getCol()) / 2;;
+        return coronation.move(board.removePiece(new Position(middleRow, middleCol)), from, to);
+    }
+
+    private Colour middlePieceColor(Board board, Position from, Position to) {
+        int middleRow = (from.getRow() + to.getRow()) / 2;
+        int middleCol = (from.getCol() + to.getCol()) / 2;
+        Piece piece = board.getPiece(new Position(middleRow, middleCol));
+        return piece.getColour();
+    }
 }
