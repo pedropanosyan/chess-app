@@ -1,6 +1,4 @@
 package common2.pieceInBetween;
-
-import common.Piece;
 import common2.Board;
 import common2.Position;
 
