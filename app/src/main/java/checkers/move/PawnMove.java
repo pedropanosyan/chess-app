@@ -1,13 +1,12 @@
 package checkers.move;
 
+import common.move.Move;
 import common.Board;
 import common.Piece;
 import common.Position;
-import common.enums.Colour;
 import common.enums.PieceType;
-import common.move.Move;
-import common.movementValidator.MovementValidator;
 import common.exceptions.InvalidMoveException;
+import common.movementValidator.MovementValidator;
 import javafx.geometry.Pos;
 
 import java.util.ArrayList;

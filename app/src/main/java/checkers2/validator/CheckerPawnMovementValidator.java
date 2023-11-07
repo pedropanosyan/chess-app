@@ -1,32 +1,38 @@
 package checkers2.validator;
 
 import common2.Board;
+import common2.Move.BasicMove;
 import common2.Piece;
 import common2.Position;
+import common2.Result.ValidatorResult;
 import common2.enums.Colour;
 import common2.pieceInBetween.CheckersInBetweenStrategy;
 import common2.validator.MovementValidator;
 
 public class CheckerPawnMovementValidator implements MovementValidator {
 
+    private final ValidatorResult falseValidatorResult = new ValidatorResult(false, new BasicMove());
+    private final ValidatorResult trueValidatorResult = new ValidatorResult(true, new BasicMove());
+
     @Override
-    public boolean validateMove(Board board, Position from, Position to) {
+    public ValidatorResult validateMove(Board board, Position from, Position to) {
         Piece fromPiece = board.getPiece(from);
         Piece toPiece = board.getPiece(to);
 
-        if (isPieceNull(fromPiece))  return false;
-        if (!isPieceNull(toPiece))  return false;
+        if (isPieceNull(fromPiece))  return falseValidatorResult;
+        if (!isPieceNull(toPiece))  return falseValidatorResult;
 
-        if (board.isOutOfIndex(from) || board.isOutOfIndex(to)) return false;
+        if (board.isOutOfIndex(from) || board.isOutOfIndex(to)) return falseValidatorResult;
 
         int rowDiff = Math.abs(to.getRow() - from.getRow());
         int colDiff = Math.abs(to.getCol() - from.getCol());
 
-        if (!isDiagonal(rowDiff, colDiff)) return false;
-        if (!isMovingForward(from, to, fromPiece.getColour())) return false;
+        if (!isDiagonal(rowDiff, colDiff)) return falseValidatorResult;
+        if (!isMovingForward(from, to, fromPiece.getColour())) return falseValidatorResult;
 
-        if (isDoubleDiagonal(rowDiff, colDiff)) return board.pieceInBetween(from, to, new CheckersInBetweenStrategy());
-        return true;
+        if (board.pieceInBetween(from, to, new CheckersInBetweenStrategy())) return falseValidatorResult;
+        if (isDoubleDiagonal(rowDiff, colDiff) && !pieceInTheMiddle(board, from, to)) return falseValidatorResult;
+        return trueValidatorResult;
     }
 
     private boolean isPieceNull(Piece piece) {
@@ -47,5 +53,15 @@ public class CheckerPawnMovementValidator implements MovementValidator {
         } else {
             return to.getRow() <= from.getRow();
         }
+    }
+
+    private boolean pieceInTheMiddle(Board board, Position from, Position to) {
+        int middleRow = (from.getRow() + to.getRow()) / 2;
+        int middleCol = (from.getCol() + to.getCol()) / 2;
+
+        Piece middlePiece = board.getPiece(new Position(middleRow, middleCol));
+        Piece fromPiece = board.getPiece(from);
+
+        return middlePiece != null && middlePiece.getColour() != fromPiece.getColour();
     }
 }

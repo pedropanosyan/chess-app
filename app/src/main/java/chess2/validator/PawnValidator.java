@@ -1,43 +1,45 @@
 package chess2.validator;
 
 import common2.Board;
-import common2.Piece;
+import common2.Move.BasicMove;
 import common2.Position;
+import common2.Result.ValidatorResult;
 import common2.enums.Colour;
+import common2.enums.PieceType;
 import common2.validator.MovementValidator;
 
 public class PawnValidator implements MovementValidator {
 
-    int forward;
-    int backward;
+    int maxSteps;
+    private final ValidatorResult falseValidatorResult = new ValidatorResult(false, null);
+    private final ValidatorResult trueValidatorResult = new ValidatorResult(true, new BasicMove());
 
-    public PawnValidator(int forward, int backward) {
-        this.forward = forward;
-        this.backward = backward;
+    public PawnValidator(int maxSteps) {
+        this.maxSteps = maxSteps;
     }
 
     @Override
-    public boolean validateMove(Board board, Position from, Position to) {
+    public ValidatorResult validateMove(Board board, Position from, Position to) {
         int rowDiff = to.getRow() - from.getRow();
         int colDiff = Math.abs(to.getCol() - from.getCol());
 
-        if (!pieceExists(board, from)) return false;
-        if (isVerticalMovementValid(rowDiff, colDiff, hasMoved(board, from))) return true;
+        if (!board.existsPosition(from)) return falseValidatorResult;
+        if (isVerticalMovementValid(board.getPiece(from).getType(), rowDiff, colDiff, hasMoved(board, from))) return trueValidatorResult;
 
-        if (!board.existsPosition(to)) return false;
-
-        return isDiagonalMovementValid(board, from, to);
+        if (!board.existsPosition(to)) return falseValidatorResult;
+        if (!isDiagonalMovementValid(board, from, to)) return falseValidatorResult;
+        return trueValidatorResult;
     }
 
     private static boolean hasMoved(Board board, Position from) {
         return board.existsPosition(from) && board.getPiece(from).hasMoved();
     }
 
-    private boolean isVerticalMovementValid(int rowDiff, int colDiff, Boolean hasMoved) {
-        if (movesBackward(rowDiff, colDiff)) return true;
-        if (movesForward(rowDiff, colDiff)) return true;
-        if (isDoubleMoveForward(rowDiff, colDiff, hasMoved)) return true;
-        if (isDoubleBackward(rowDiff, colDiff, hasMoved)) return true;
+    private boolean isVerticalMovementValid(PieceType pieceType, int rowDiff, int colDiff, Boolean hasMoved) {
+        if (movesBackward(pieceType, rowDiff, colDiff)) return true;
+        if (movesForward(pieceType, rowDiff, colDiff)) return true;
+        if (isDoubleMoveForward(pieceType, rowDiff, colDiff, hasMoved)) return true;
+        if (isDoubleBackward(pieceType, rowDiff, colDiff, hasMoved)) return true;
         else return false;
     }
 
@@ -64,28 +66,24 @@ public class PawnValidator implements MovementValidator {
         return rowDiff == -1 && colDiff == 1;
     }
 
-    private boolean movesForward(int rowDiff, int colDiff) {
-        return rowDiff == 1 && colDiff == 0 && this.forward > 0;
+    private boolean movesForward(PieceType pieceType, int rowDiff, int colDiff) {
+        return rowDiff == 1 && colDiff == 0 && pieceType == PieceType.WHITE_PAWN;
     }
 
-    private boolean movesBackward(int rowDiff, int colDiff) {
-        return rowDiff == -1 && colDiff == 0 && this.backward > 0;
+    private boolean movesBackward(PieceType pieceType, int rowDiff, int colDiff) {
+        return rowDiff == -1 && colDiff == 0 && pieceType == PieceType.BLACK_PAWN;
     }
 
-    private boolean isDoubleMoveForward(int rowDiff, int colDiff, boolean hasMoved) {
-        return rowDiff == 2 && colDiff == 0 && this.forward > 0 && !hasMoved;
+    private boolean isDoubleMoveForward(PieceType pieceType, int rowDiff, int colDiff, boolean hasMoved) {
+        return rowDiff == 2 && colDiff == 0 && pieceType == PieceType.WHITE_PAWN && !hasMoved;
     }
 
-    private boolean isDoubleBackward(int rowDiff, int colDiff, Boolean hasMoved) {
-        return rowDiff == -2 && colDiff == 0 && this.backward > 0 && !hasMoved;
+    private boolean isDoubleBackward(PieceType pieceType, int rowDiff, int colDiff, Boolean hasMoved) {
+        return rowDiff == -2 && colDiff == 0 && pieceType == PieceType.BLACK_PAWN && !hasMoved;
     }
 
     private static boolean areDifferentColors(Colour from, Colour to) {
         return from != to;
-    }
-
-    private static boolean pieceExists(Board board, Position to) {
-        return !board.existsPosition(to);
     }
 
 

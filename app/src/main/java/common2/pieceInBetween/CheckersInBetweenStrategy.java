@@ -19,15 +19,12 @@ public class CheckersInBetweenStrategy implements PieceInBetweenStrategy {
 
         while (currentRow != to.getRow() && currentCol != to.getCol()) {
             Position currentPosition = new Position(currentRow, currentCol);
-            if (!board.existsPosition(currentPosition)) return false;
-            Piece piece = board.getPiece(currentPosition);
-            if (piece.getColour() != colour) {
-                return false;
+            if (board.existsPosition(currentPosition)) {
+                if (board.getPiece(currentPosition).getColour() == colour) return true;
             }
-
             currentRow += rowDirection;
             currentCol += colDirection;
         }
-        return true;
+        return false;
     }
 }

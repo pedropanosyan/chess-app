@@ -7,6 +7,6 @@ import java.util.Map;
 
 public interface WinningValidator {
 
-    boolean validated(GameVersion version, Board board, Colour colour);
+    boolean validated(Board board, Colour colour);
 
 }
