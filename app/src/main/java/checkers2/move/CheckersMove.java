@@ -24,11 +24,11 @@ public class CheckersMove implements Move {
     public Board move(Board board, Position from, Position to) {
 
         int colDiff = Math.abs(to.getCol() - from.getCol());
-        boolean pieceInTheMiddle = board.pieceInBetween(from, to, new CheckersInBetweenStrategy());
+        boolean sameColourPieceInMiddle = board.pieceInBetween(from, to, new CheckersInBetweenStrategy());
 
         if (isCoronation(board.getSize(), to)) return coronate(board, from, to);
         if (colDiff == 1) return basicMove.move(board, from, to);
-        if (!pieceInTheMiddle && colDiff == 2) {
+        if (!sameColourPieceInMiddle && colDiff == 2) {
             if (middlePieceColor(board, from, to) == null) return deleteAndMove(board, from, to);
         }
 
