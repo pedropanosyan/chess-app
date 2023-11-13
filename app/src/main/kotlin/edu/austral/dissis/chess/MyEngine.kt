@@ -10,11 +10,11 @@ import common2.factory.GameFactory
 
 import edu.austral.dissis.chess.gui.*
 
-class Engine: GameEngine {
+class MyEngine: GameEngine {
 
     private var classicGame = GameFactory();
-    private var myGame = classicGame.createClassicCheckersGame();
-    private var currentPlayer = Colour.WHITE
+    private var myGame = classicGame.createClassicChessGame();
+    var currentPlayer = Colour.WHITE
 
     override fun applyMove(move: Move): MoveResult {
         val fromPos = adaptDecreasePosition(move.from)
@@ -34,7 +34,8 @@ class Engine: GameEngine {
 
     override fun init(): InitialState {
         return InitialState(
-            Adapter.adaptBoard(myGame.board),(Adapter.getPieces(myGame.board)),
+            Adapter.adaptBoard(myGame.board),
+            (Adapter.getPieces(myGame.board)),
             PlayerColor.WHITE
         )
     }

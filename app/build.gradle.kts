@@ -16,7 +16,7 @@ repositories {
         url = uri("https://maven.pkg.github.com/austral-ingsis/simple-client-server")
         credentials {
             username = "pedropanosyan"
-            password = "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"
+            password = "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"
         }
     }
 }
@@ -25,8 +25,7 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("edu.austral.dissis.chess:chess-ui:2.0.0")
-    implementation("junit:junit:4.13.1")
-    implementation("junit:junit:4.13.1")
+    implementation("edu.austral.dissis.chess:simple-client-server:1.2.0")
 }
 
 javafx {

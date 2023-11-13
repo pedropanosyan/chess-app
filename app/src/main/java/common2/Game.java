@@ -23,9 +23,9 @@ public class Game {
         this.turn = turn;
     }
 
-    public Game move(Position from, Position to) throws InvalidMoveException, EndGameException, NotTurnException {
+    public Game move(Position from, Position to) throws InvalidMoveException, EndGameException {
         if (!board.existsPosition(from)) throw new InvalidMoveException("No piece found in from position");
-        if (!isTurnValid(board.getPiece(from).getColour())) throw new NotTurnException();
+        if (!isTurnValid(board.getPiece(from).getColour())) throw new InvalidMoveException("Not your turn");
 
         Optional<Move> move = isMovementValid(from, to);
         if (move.isEmpty()) throw new InvalidMoveException("Invalid movement");
@@ -60,5 +60,9 @@ public class Game {
 
     public Board getBoard() {
         return board;
+    }
+
+    public Colour getTurnColour() {
+        return turn.getCurrentTurn();
     }
 }
