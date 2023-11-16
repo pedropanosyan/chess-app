@@ -51,7 +51,7 @@ public class Board {
         return position.getRow() < 0 || position.getRow() > size-1 || position.getCol() < 0 || position.getCol() > size-1;
     }
 
-    private Position findKingPosition(PieceType pieceType, Colour colour) {
+    public Position findKingPosition(PieceType pieceType, Colour colour) {
         return board.entrySet().stream()
                 .filter(entry -> entry.getValue().getType() == pieceType && entry.getValue().getColour() == colour)
                 .map(Map.Entry::getKey)

@@ -37,6 +37,8 @@ public class Adapter {
             case BISHOP -> "bishop";
             case KNIGHT -> "knight";
             case ROOK -> "rook";
+            case ARCHBISHOP -> "archbishop";
+            case CHANCELLOR -> "chancellor";
         };
     }
 

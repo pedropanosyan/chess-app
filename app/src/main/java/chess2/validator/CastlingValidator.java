@@ -35,15 +35,11 @@ public class CastlingValidator implements MovementValidator {
     }
 
     private boolean isRightPiece(Piece piece, PieceType expected) {
-        return piece.getType() == expected;
+        return piece != null && piece.getType() == expected;
     }
 
     private static boolean isCastling(int colDiff, int rowDiff) {
         return (colDiff == 2 || colDiff == 3) && rowDiff == 0;
-    }
-
-    private static boolean hasM(Piece piece) {
-        return !piece.hasMoved();
     }
 
     private Piece findRook(Board board, Position from, Position to) {

@@ -49,4 +49,12 @@ public class PieceFactory {
         return new Piece(gameVersion.getValidatorsByPieceType(PieceType.KING), PieceType.KING, colour);
     }
 
+   public Piece createChancellor(Colour colour) {
+        return new Piece(gameVersion.getValidatorsByPieceType(PieceType.CHANCELLOR), PieceType.CHANCELLOR, colour);
+    }
+
+    public Piece createArchBishop(Colour colour) {
+        return new Piece(gameVersion.getValidatorsByPieceType(PieceType.ARCHBISHOP), PieceType.ARCHBISHOP, colour);
+    }
+
 }

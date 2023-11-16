@@ -17,7 +17,7 @@ public class CheckMateValidator implements WinningValidator {
     public boolean validated(Board board, Colour colour) {
         if (!board.isPieceUnderAttack(PieceType.KING, getOppositeColour(colour))) return false;
 
-        return canEscapeCheck(board, colour);
+        return !canEscapeCheck(board, getOppositeColour(colour));
     }
 
     private boolean canEscapeCheck(Board board, Colour colour) {

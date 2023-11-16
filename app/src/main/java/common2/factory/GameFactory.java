@@ -69,4 +69,51 @@ public class GameFactory {
         Board board = BoardFactory.createClassicCheckerBoard(gameVersion);
         return new Game(board, turn, gameVersion);
     }
+
+    public Game createChessAlternativeGame() {
+        List<WinningValidator> winningValidators = List.of(new CheckMateValidator());
+        List<MovementValidator> globalValidators = List.of(new UnderCheckValidator());
+
+        DiagonalValidator diagonalValidator = new DiagonalValidator(8);
+        DiagonalValidator diagonalKingValidator = new DiagonalValidator(1);
+        HorizontalValidator horizontalValidator = new HorizontalValidator(8);
+        HorizontalValidator horizontalKingValidator = new HorizontalValidator(1);
+        VerticalValidator verticalValidator = new VerticalValidator(8);
+        VerticalValidator verticalKingValidator = new VerticalValidator(1);
+        KnightValidator knightValidator = new KnightValidator();
+        PawnValidator pawnValidator = new PawnValidator(1);
+        CastlingValidator castlingValidator = new CastlingValidator();
+        CoronationValidator coronationValidator = new CoronationValidator();
+
+        GameVersion gameVersion = new GameVersion(winningValidators, globalValidators, Map.of(
+                PieceType.WHITE_PAWN, List.of(coronationValidator, pawnValidator),
+                PieceType.BLACK_PAWN, List.of(coronationValidator, pawnValidator),
+                PieceType.CHANCELLOR, List.of(horizontalValidator, verticalValidator, knightValidator),
+                PieceType.KNIGHT, List.of(knightValidator),
+                PieceType.ARCHBISHOP, List.of(diagonalValidator, knightValidator),
+                PieceType.QUEEN, List.of(horizontalValidator, verticalValidator, diagonalValidator),
+                PieceType.KING, List.of(horizontalKingValidator, verticalKingValidator, diagonalKingValidator, castlingValidator)
+        ));
+
+        Board board = BoardFactory.createAlternativeChessBoard(gameVersion);
+        TwoPlayersTurn turn = new TwoPlayersTurn(Colour.WHITE);
+        return new Game(board, turn, gameVersion);
+    }
+
+    public Game createPersonalizeCheckersGame(int size) {
+        List<MovementValidator> globalValidators = List.of();
+        List<WinningValidator> winningValidators = List.of(new NoPiecesRemaining(), new NoPlaceToMove());
+
+        CheckerPawnMovementValidator checkerPawnMovementValidator = new CheckerPawnMovementValidator();
+        CheckerKingMovementValidator checkerKingMovementValidator = new CheckerKingMovementValidator();
+
+        GameVersion gameVersion = new GameVersion(winningValidators, globalValidators, Map.of(
+                PieceType.PAWN, List.of(checkerPawnMovementValidator),
+                PieceType.KING, List.of(checkerKingMovementValidator)
+        ));
+
+        TwoPlayersTurn turn = new TwoPlayersTurn(Colour.WHITE);
+        Board board = BoardFactory.createPesonalizedCheckersBoard(gameVersion, size);
+        return new Game(board, turn, gameVersion);
+    }
 }

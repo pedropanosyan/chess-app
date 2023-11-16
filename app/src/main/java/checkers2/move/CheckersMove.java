@@ -29,9 +29,8 @@ public class CheckersMove implements Move {
         if (isCoronation(board.getSize(), to)) return coronate(board, from, to);
         if (colDiff == 1) return basicMove.move(board, from, to);
         if (!sameColourPieceInMiddle && colDiff == 2) {
-            if (middlePieceColor(board, from, to) == null) return deleteAndMove(board, from, to);
+            if (middlePieceColor(board, from, to) == null) return basicMove.move(board, from, to);
         }
-
         Board afterMovingBoard = deleteAndMove(board, from, to);
         List<Position> possiblePositions = fetchPossiblePositions(afterMovingBoard, to);
         if (possiblePositions.isEmpty()) return afterMovingBoard;
@@ -54,7 +53,6 @@ public class CheckersMove implements Move {
             currentCol += colDirection;
         }
         return basicMove.move(returnable, from, to);
-
     }
 
     private boolean isCoronation(int boardSize, Position to) {
@@ -62,8 +60,9 @@ public class CheckersMove implements Move {
     }
 
     private List<Position> fetchPossiblePositions(Board board, Position from) {
-        return board.getValidMovements(board.getPiece(from));
-    }
+        return board.getValidMovements(board.getPiece(from)).stream()
+                .filter(to -> middlePieceColor(board, from, to) !=null && middlePieceColor(board, from, to) != board.getPiece(from).getColour())
+                .collect(Collectors.toList());    }
 
     private Board coronate(Board board, Position from, Position to) {
         int middleRow = (from.getRow() + to.getRow()) / 2;
@@ -75,6 +74,7 @@ public class CheckersMove implements Move {
         int middleRow = (from.getRow() + to.getRow()) / 2;
         int middleCol = (from.getCol() + to.getCol()) / 2;
         Piece piece = board.getPiece(new Position(middleRow, middleCol));
+        if (piece == null) return null;
         return piece.getColour();
     }
 }
